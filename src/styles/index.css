@@ -1644,6 +1644,180 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--primary-600);
 }
 
+/* Today's Schedule Card - Full Width with Reminders */
+.schedule-card-full {
+  grid-column: span 2;
+}
+
+.schedule-card-full .card-header {
+  justify-content: flex-start;
+  position: relative;
+}
+
+.add-mini-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--primary-500);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-left: auto;
+}
+
+.add-mini-btn:hover {
+  background: var(--primary-600);
+  transform: scale(1.05);
+}
+
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.empty-schedule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-schedule svg {
+  color: var(--neutral-300);
+  margin-bottom: 8px;
+}
+
+.empty-schedule p {
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.add-first-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--primary-500);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.add-first-btn:hover {
+  background: var(--primary-600);
+}
+
+.schedule-reminder-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--neutral-50);
+  border-radius: 10px;
+  border: 1px solid var(--neutral-200);
+  transition: all var(--transition-fast);
+}
+
+.schedule-reminder-item:hover {
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.mini-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--neutral-400);
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.mini-checkbox:hover {
+  transform: scale(1.1);
+}
+
+.schedule-reminder-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.schedule-reminder-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.schedule-time {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary-500);
+}
+
+.schedule-type-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+}
+
+.schedule-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.schedule-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.mini-action-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: var(--neutral-100);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mini-action-btn:hover {
+  background: var(--primary-100);
+  color: var(--primary-600);
+}
+
+.mini-action-btn.delete:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
 .schedule-card .schedule-content {
   display: flex;
   gap: 8px;
@@ -2574,6 +2748,95 @@ h1, h2, h3, h4, h5, h6 {
 
 .type-option.active span {
   color: var(--text-primary);
+}
+
+/* Time of Day Selector */
+.time-of-day-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.time-of-day-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  border-radius: 12px;
+  border: 2px solid var(--neutral-200);
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.time-of-day-option:hover {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+}
+
+.time-of-day-option.active {
+  border-color: var(--primary-500);
+  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+  color: var(--text-primary);
+}
+
+.time-of-day-option .time-icon {
+  font-size: 1.4rem;
+}
+
+/* Checkbox Label */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-500);
+}
+
+.checkbox-label span {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Reminder Section Labels */
+.reminder-section {
+  margin-bottom: 16px;
+}
+
+.reminder-section:last-child {
+  margin-bottom: 0;
+}
+
+.reminder-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+/* Schedule Time of Day Display */
+.schedule-time-of-day {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Modal Buttons */

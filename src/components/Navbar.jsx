@@ -44,7 +44,6 @@ const Navbar = () => {
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
     { path: '/learn', icon: BookOpen, label: 'Learn' },
-    { path: '/reminders', icon: Bell, label: 'Reminders' },
   ];
 
   return (
