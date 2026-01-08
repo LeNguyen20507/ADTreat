@@ -1,50 +1,20 @@
 /**
  * Navbar Component
  * Global top navigation bar with emergency button (with label), app title, and patient switcher
- * Tab navigation at BOTTOM for Home, Learn, Reminders
+ * SOS button opens the AI-powered calming assistant modal
+ * Single page app - no bottom tabs needed
  */
 
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Bell, BookOpen, User, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import EmergencyModal from './EmergencyModal';
+import SOSModal from './SOSModal';
+import PatientSwitcher from './PatientSwitcher';
+import { usePatient } from '../context/PatientContext';
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
-  
-  // Patient-specific emergency information
-  const patientInfo = {
-    name: "John Doe",
-    age: 72,
-    condition: "Moderate Alzheimer's Disease",
-    doctorName: "Dr. Sarah Smith",
-    doctorPhone: "+1 (555) 234-5678",
-    allergies: ['Penicillin', 'Sulfa drugs'],
-    medications: [
-      { name: 'Donepezil', dosage: '10mg', time: '8:00 AM' },
-      { name: 'Memantine', dosage: '5mg', time: 'Twice daily' }
-    ],
-    emergencyContacts: [
-      { name: "Mary Doe", role: "Spouse", phone: "+1 (555) 123-4567" },
-      { name: "Sarah Johnson", role: "Daughter", phone: "+1 (555) 987-6543" },
-    ],
-    criticalInfo: [
-      "Patient has wandering tendency - check doors/windows",
-      "Responds well to calm, slow speech",
-      "May become confused in unfamiliar environments",
-      "Sundowning typically occurs after 5 PM"
-    ]
-  };
-  
-  const handleEmergency = () => {
-    setShowEmergencyModal(true);
-  };
-
-  const navItems = [
-    { path: '/', icon: Home, label: 'Home' },
-    { path: '/learn', icon: BookOpen, label: 'Learn' },
-  ];
+  const [showSOSModal, setShowSOSModal] = useState(false);
+  const [showPatientSwitcher, setShowPatientSwitcher] = useState(false);
+  const { currentPatient, currentPatientId } = usePatient();
 
   return (
     <>
@@ -53,7 +23,7 @@ const Navbar = () => {
         {/* LEFT: Emergency Button with Label */}
         <button 
           className="emergency-btn-with-label" 
-          onClick={handleEmergency}
+          onClick={() => setShowSOSModal(true)}
           aria-label="Emergency"
         >
           <AlertCircle size={20} />
@@ -68,35 +38,34 @@ const Navbar = () => {
         {/* RIGHT: Patient Switcher Button */}
         <button 
           className="patient-switcher-btn" 
-          onClick={() => {/* TODO: Open patient switcher */}}
+          onClick={() => setShowPatientSwitcher(true)}
           aria-label="Switch Patient"
-          title="Switch Patient"
+          title={`Current: ${currentPatient?.preferredName || 'Select Patient'}`}
+          style={{ '--patient-color': currentPatient?.color || '#14B8A6' }}
         >
-          <div className="patient-avatar-btn">
-            <User size={20} />
+          <div 
+            className="patient-avatar-btn"
+            style={{ 
+              background: `${currentPatient?.color}20`,
+              borderColor: currentPatient?.color 
+            }}
+          >
+            <span className="patient-avatar-emoji">{currentPatient?.avatar || '👤'}</span>
           </div>
         </button>
       </nav>
 
-      {/* Bottom Tab Navigation - Fixed at Bottom */}
-      <nav className="bottom-tab-nav">
-        {navItems.map(({ path, icon: Icon, label }) => (
-          <NavLink
-            key={path}
-            to={path}
-            className={({ isActive }) => `bottom-tab-item ${isActive ? 'active' : ''}`}
-          >
-            <Icon size={22} />
-            <span>{label}</span>
-          </NavLink>
-        ))}
-      </nav>
+      {/* SOS Modal - AI-powered calming assistant */}
+      <SOSModal 
+        isOpen={showSOSModal}
+        onClose={() => setShowSOSModal(false)}
+        patientId={currentPatientId}
+      />
 
-      {/* Emergency Modal */}
-      <EmergencyModal 
-        isOpen={showEmergencyModal}
-        onClose={() => setShowEmergencyModal(false)}
-        patientInfo={patientInfo}
+      {/* Patient Switcher Modal */}
+      <PatientSwitcher
+        isOpen={showPatientSwitcher}
+        onClose={() => setShowPatientSwitcher(false)}
       />
     </>
   );

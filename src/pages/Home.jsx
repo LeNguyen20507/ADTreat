@@ -1,35 +1,39 @@
 /**
- * Home Page - Patient Information Dashboard with Reminders
- * Non-scrollable overview with integrated today's schedule/reminders
- * Modal for add/edit reminders
+ * Home Page - Patient Dashboard with Tabbed Reminders
+ * Focus on songs/sounds for calming
+ * 4 tabbed reminder types: Medication, Appointment, Meal, Activity
  */
 
 import { useState } from 'react';
 import { 
-  Phone, 
   Pill, 
   AlertTriangle,
-  User,
-  Heart,
   Activity,
   Brain,
   Plus,
-  Check,
   Clock,
   Calendar,
   Utensils,
   X,
   Edit3,
   Trash2,
-  Save
+  Save,
+  Music,
+  Mic,
+  Play,
+  Heart
 } from 'lucide-react';
+import { usePatient } from '../context/PatientContext';
 
 const Home = () => {
-  // State for reminders
+  const { currentPatient } = usePatient();
+
+  // State for reminders - organized by type
   const [reminders, setReminders] = useState([]);
   const [completedIds, setCompletedIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingReminder, setEditingReminder] = useState(null);
+  const [activeTab, setActiveTab] = useState('medication');
   
   // Form state
   const [formData, setFormData] = useState({
@@ -41,9 +45,9 @@ const Home = () => {
   });
 
   const reminderTypes = [
-    { id: 'medication', label: 'Medication', icon: Pill, color: '#3B82F6' },
-    { id: 'appointment', label: 'Appointment', icon: Calendar, color: '#8B5CF6' },
-    { id: 'meal', label: 'Meal', icon: Utensils, color: '#10B981' },
+    { id: 'medication', label: 'Meds', icon: Pill, color: '#3B82F6' },
+    { id: 'appointment', label: 'Appts', icon: Calendar, color: '#8B5CF6' },
+    { id: 'meal', label: 'Meals', icon: Utensils, color: '#10B981' },
     { id: 'activity', label: 'Activity', icon: Activity, color: '#F59E0B' },
   ];
 
@@ -53,38 +57,23 @@ const Home = () => {
     { id: 'evening', label: 'Evening', icon: '🌙' },
   ];
 
-  // Patient data
-  const patientData = {
-    name: 'John Doe',
-    stage: 'Mild Stage',
-    condition: 'Alzheimer\'s Disease',
-    age: 72
-  };
-
-  // Medical overview
-  const medicalInfo = {
-    medications: [
-      { name: 'Donepezil', dosage: '10mg', time: 'Morning' },
-      { name: 'Memantine', dosage: '5mg', time: 'Twice daily' }
-    ],
-    allergies: ['Penicillin', 'Sulfa drugs'],
-    physician: { name: 'Dr. Sarah Smith', phone: '+1 (555) 234-5678' }
-  };
-
-  // Emergency contacts
-  const emergencyContacts = [
-    { name: 'Mary Doe', relation: 'Spouse', phone: '+1 (555) 123-4567' },
-    { name: 'Sarah J.', relation: 'Daughter', phone: '+1 (555) 987-6543' }
-  ];
-
   const getTypeInfo = (type) => {
     return reminderTypes.find(t => t.id === type) || reminderTypes[0];
   };
 
+  // Get reminders for current tab
+  const currentTabReminders = reminders
+    .filter(r => r.type === activeTab && !completedIds.includes(r.id))
+    .sort((a, b) => {
+      const order = { morning: 1, afternoon: 2, evening: 3 };
+      if (a.isRecurring !== b.isRecurring) return b.isRecurring ? 1 : -1;
+      return order[a.timeOfDay] - order[b.timeOfDay];
+    });
+
   // Open modal for new reminder
   const handleAddNew = () => {
     setEditingReminder(null);
-    setFormData({ title: '', timeOfDay: 'morning', type: 'medication', isRecurring: false, note: '' });
+    setFormData({ title: '', timeOfDay: 'morning', type: activeTab, isRecurring: false, note: '' });
     setShowModal(true);
   };
 
@@ -107,9 +96,7 @@ const Home = () => {
 
     if (editingReminder) {
       setReminders(prev => prev.map(r => 
-        r.id === editingReminder.id 
-          ? { ...r, ...formData }
-          : r
+        r.id === editingReminder.id ? { ...r, ...formData } : r
       ));
     } else {
       const newReminder = {
@@ -121,7 +108,7 @@ const Home = () => {
     }
     
     setShowModal(false);
-    setFormData({ title: '', timeOfDay: 'morning', type: 'medication', isRecurring: false, note: '' });
+    setFormData({ title: '', timeOfDay: 'morning', type: activeTab, isRecurring: false, note: '' });
     setEditingReminder(null);
   };
 
@@ -140,204 +127,189 @@ const Home = () => {
     }
   };
 
-  // Sort reminders - recurring first, then by time of day
-  const timeOfDayOrder = { morning: 1, afternoon: 2, evening: 3 };
-  const sortedReminders = [...reminders].sort((a, b) => {
-    if (a.isRecurring !== b.isRecurring) return b.isRecurring ? 1 : -1;
-    return timeOfDayOrder[a.timeOfDay] - timeOfDayOrder[b.timeOfDay];
-  });
-  
-  const recurringReminders = sortedReminders.filter(r => r.isRecurring && !completedIds.includes(r.id));
-  const normalReminders = sortedReminders.filter(r => !r.isRecurring && !completedIds.includes(r.id));
+  // Get count for each tab
+  const getTabCount = (type) => {
+    return reminders.filter(r => r.type === type && !completedIds.includes(r.id)).length;
+  };
 
   return (
     <div className="home-page">
       {/* Patient Identity Section */}
-      <div className="patient-identity">
-        <div className="patient-photo">
-          <User size={32} />
+      <div className="patient-identity" style={{ '--patient-color': currentPatient?.color }}>
+        <div 
+          className="patient-photo"
+          style={{ 
+            background: `${currentPatient?.color}15`,
+            borderColor: currentPatient?.color 
+          }}
+        >
+          <span className="patient-avatar-emoji-lg">{currentPatient?.avatar || '👤'}</span>
         </div>
         <div className="patient-info">
-          <h1 className="patient-name">{patientData.name}</h1>
-          <span className="patient-stage">{patientData.stage} • Age {patientData.age}</span>
+          <h1 className="patient-name">{currentPatient?.preferredName || 'Patient'}</h1>
+          <span className="patient-stage">{currentPatient?.stage || 'Unknown'} • Age {currentPatient?.age || '?'}</span>
         </div>
       </div>
 
-      {/* Info Label */}
-      <div className="home-info-label">
-        <Brain size={14} />
-        <span>Current Patient Overview</span>
-      </div>
-
-      {/* Critical Information Cards Grid */}
-      <div className="home-cards-grid">
-        {/* Medical Overview Card */}
-        <div className="home-card medical-card">
-          <div className="card-header">
-            <Pill size={16} />
-            <span>Medications</span>
+      {/* Two Column Layout */}
+      <div className="home-two-column">
+        {/* Left Column - Songs & Sounds */}
+        <div className="home-left-column">
+          {/* Favorite Songs Card */}
+          <div className="home-card songs-card">
+            <div className="card-header">
+              <Music size={16} />
+              <span>Calming Songs</span>
+              <Heart size={14} className="header-heart" />
+            </div>
+            <div className="card-content songs-list">
+              {(currentPatient?.favoriteSongs || []).map((song, idx) => (
+                <button key={idx} className="song-item">
+                  <div className="song-play-btn">
+                    <Play size={12} />
+                  </div>
+                  <div className="song-info">
+                    <span className="song-title">{song.title}</span>
+                    <span className="song-artist">{song.artist}</span>
+                  </div>
+                  {song.calming === 'very_high' && (
+                    <span className="calming-badge">★</span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="card-content">
-            <div className="med-list">
-              {medicalInfo.medications.map((med, idx) => (
-                <div key={idx} className="med-item">
+
+          {/* Voice Recordings Card */}
+          <div className="home-card recordings-card">
+            <div className="card-header">
+              <Mic size={16} />
+              <span>Family Voices</span>
+            </div>
+            <div className="card-content recordings-list">
+              {(currentPatient?.voiceRecordings || []).map((recording, idx) => (
+                <button key={idx} className="recording-item">
+                  <div className="recording-play-btn">
+                    <Play size={10} />
+                  </div>
+                  <div className="recording-info">
+                    <span className="recording-title">{recording.title}</span>
+                    <span className="recording-from">{recording.from}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Medications Mini Card */}
+          <div className="home-card meds-mini-card">
+            <div className="card-header">
+              <Pill size={14} />
+              <span>Medications</span>
+            </div>
+            <div className="card-content meds-compact">
+              {(currentPatient?.medications || []).slice(0, 2).map((med, idx) => (
+                <div key={idx} className="med-compact-item">
                   <span className="med-name">{med.name}</span>
                   <span className="med-dose">{med.dosage}</span>
                 </div>
               ))}
-            </div>
-            <div className="allergy-warning">
-              <AlertTriangle size={12} />
-              <span>Allergies: {medicalInfo.allergies.join(', ')}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Emergency Contacts Card */}
-        <div className="home-card contacts-card">
-          <div className="card-header">
-            <Phone size={16} />
-            <span>Contacts</span>
-          </div>
-          <div className="card-content">
-            {emergencyContacts.map((contact, idx) => (
-              <a 
-                key={idx} 
-                href={`tel:${contact.phone}`}
-                className="contact-item"
-              >
-                <div className="contact-info">
-                  <span className="contact-name">{contact.name}</span>
-                  <span className="contact-relation">{contact.relation}</span>
+              {(currentPatient?.allergies?.length > 0) && (
+                <div className="allergy-compact">
+                  <AlertTriangle size={10} />
+                  <span>{currentPatient.allergies.join(', ')}</span>
                 </div>
-                <Phone size={14} className="call-icon" />
-              </a>
-            ))}
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Today's Schedule Card - With Reminders */}
-        <div className="home-card schedule-card-full">
-          <div className="card-header">
-            <Activity size={16} />
-            <span>Today's Schedule</span>
-          </div>
-          <div className="card-content schedule-list">
-            {recurringReminders.length === 0 && normalReminders.length === 0 ? (
-              <div className="empty-schedule">
-                <Clock size={24} />
-                <p>No reminders for today</p>
-                <button className="add-first-btn" onClick={handleAddNew}>
-                  <Plus size={14} />
-                  Add Reminder
-                </button>
-              </div>
-            ) : (
-              <>
-                {/* Recurring Tasks Section */}
-                {recurringReminders.length > 0 && (
-                  <div className="reminder-section">
-                    <h5 className="reminder-section-label">Recurring</h5>
-                    {recurringReminders.map((reminder) => {
-                      const typeInfo = getTypeInfo(reminder.type);
-                      const Icon = typeInfo.icon;
-                      const timeLabel = timeOfDayOptions.find(t => t.id === reminder.timeOfDay);
-                      
-                      return (
-                        <div key={reminder.id} className="schedule-reminder-item">
-                          <button 
-                            className="mini-checkbox"
-                            onClick={() => toggleComplete(reminder.id)}
-                            style={{ borderColor: typeInfo.color }}
-                          />
-                          <div className="schedule-reminder-main">
-                            <div className="schedule-reminder-header">
-                              <span className="schedule-time-of-day">{timeLabel?.icon} {timeLabel?.label}</span>
-                              <div 
-                                className="schedule-type-badge" 
-                                style={{ background: `${typeInfo.color}15`, color: typeInfo.color }}
-                              >
-                                <Icon size={10} />
-                              </div>
-                            </div>
-                            <h4 className="schedule-title">{reminder.title}</h4>
-                          </div>
-                          <div className="schedule-actions">
-                            <button 
-                              className="mini-action-btn"
-                              onClick={() => handleEdit(reminder)}
-                            >
-                              <Edit3 size={12} />
-                            </button>
-                            <button 
-                              className="mini-action-btn delete"
-                              onClick={() => handleDelete(reminder.id)}
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+        {/* Right Column - Reminders with Tabs */}
+        <div className="home-right-column">
+          <div className="home-card reminders-card-full">
+            <div className="card-header reminders-header">
+              <Brain size={16} />
+              <span>Today's Schedule</span>
+              <button className="add-reminder-btn" onClick={handleAddNew}>
+                <Plus size={14} />
+              </button>
+            </div>
 
-                {/* Normal Tasks Section */}
-                {normalReminders.length > 0 && (
-                  <div className="reminder-section">
-                    <h5 className="reminder-section-label">Today</h5>
-                    {normalReminders.map((reminder) => {
-                      const typeInfo = getTypeInfo(reminder.type);
-                      const Icon = typeInfo.icon;
-                      const timeLabel = timeOfDayOptions.find(t => t.id === reminder.timeOfDay);
-                      
-                      return (
-                        <div key={reminder.id} className="schedule-reminder-item">
-                          <button 
-                            className="mini-checkbox"
-                            onClick={() => toggleComplete(reminder.id)}
-                            style={{ borderColor: typeInfo.color }}
-                          />
-                          <div className="schedule-reminder-main">
-                            <div className="schedule-reminder-header">
-                              <span className="schedule-time-of-day">{timeLabel?.icon} {timeLabel?.label}</span>
-                              <div 
-                                className="schedule-type-badge" 
-                                style={{ background: `${typeInfo.color}15`, color: typeInfo.color }}
-                              >
-                                <Icon size={10} />
-                              </div>
-                            </div>
-                            <h4 className="schedule-title">{reminder.title}</h4>
+            {/* Reminder Type Tabs */}
+            <div className="reminder-tabs">
+              {reminderTypes.map(({ id, label, icon: Icon, color }) => {
+                const count = getTabCount(id);
+                return (
+                  <button
+                    key={id}
+                    className={`reminder-tab ${activeTab === id ? 'active' : ''}`}
+                    onClick={() => setActiveTab(id)}
+                    style={{ 
+                      '--tab-color': color,
+                      borderColor: activeTab === id ? color : 'transparent'
+                    }}
+                  >
+                    <Icon size={16} />
+                    <span>{label}</span>
+                    {count > 0 && (
+                      <span className="tab-count" style={{ background: color }}>{count}</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Reminder List for Active Tab */}
+            <div className="card-content reminder-list-tabbed">
+              {currentTabReminders.length === 0 ? (
+                <div className="empty-tab">
+                  <Clock size={20} />
+                  <p>No {getTypeInfo(activeTab).label.toLowerCase()} reminders</p>
+                  <button className="add-first-btn" onClick={handleAddNew}>
+                    <Plus size={12} />
+                    Add {getTypeInfo(activeTab).label}
+                  </button>
+                </div>
+              ) : (
+                <div className="reminder-items-list">
+                  {currentTabReminders.map((reminder) => {
+                    const typeInfo = getTypeInfo(reminder.type);
+                    const timeLabel = timeOfDayOptions.find(t => t.id === reminder.timeOfDay);
+                    
+                    return (
+                      <div key={reminder.id} className="reminder-item-row">
+                        <button 
+                          className="reminder-checkbox"
+                          onClick={() => toggleComplete(reminder.id)}
+                          style={{ borderColor: typeInfo.color }}
+                        />
+                        <div className="reminder-item-content">
+                          <div className="reminder-item-top">
+                            <span className="reminder-time-badge">
+                              {timeLabel?.icon} {timeLabel?.label}
+                            </span>
+                            {reminder.isRecurring && (
+                              <span className="recurring-badge">↻</span>
+                            )}
                           </div>
-                          <div className="schedule-actions">
-                            <button 
-                              className="mini-action-btn"
-                              onClick={() => handleEdit(reminder)}
-                            >
-                              <Edit3 size={12} />
-                            </button>
-                            <button 
-                              className="mini-action-btn delete"
-                              onClick={() => handleDelete(reminder.id)}
-                            >
-                              <Trash2 size={12} />
-                            </button>
-                          </div>
+                          <span className="reminder-item-title">{reminder.title}</span>
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </>
-            )}
+                        <div className="reminder-item-actions">
+                          <button onClick={() => handleEdit(reminder)}>
+                            <Edit3 size={12} />
+                          </button>
+                          <button onClick={() => handleDelete(reminder.id)}>
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Bottom Label */}
-      <div className="home-footer-label">
-        <span>Tap the person icon (top right) to switch patients</span>
       </div>
 
       {/* Add/Edit Modal */}
@@ -415,7 +387,7 @@ const Home = () => {
                   placeholder="Any additional notes..."
                   value={formData.note}
                   onChange={(e) => setFormData(prev => ({ ...prev, note: e.target.value }))}
-                  rows={3}
+                  rows={2}
                 />
               </div>
             </div>

@@ -1,11 +1,12 @@
 /**
  * ADTreat - Alzheimer Care Support App
- * Main Application Component with Routing
+ * Main Application Component
+ * Single page app focused on songs/sounds for calming
  */
 
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components';
-import { Home, Learn, Profile } from './pages';
+import { Home } from './pages';
 
 function App() {
   return (
@@ -13,11 +14,9 @@ function App() {
       {/* Global Navigation Bar - Always visible at top */}
       <Navbar />
       
-      {/* Main Routes - 2 tabs only */}
+      {/* Main Route - Home only */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/learn" element={<Learn />} />
-        <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>
   );

@@ -1,7 +1,9 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# Expo
+# Expo (legacy)
 .expo/
 dist/
 web-build/
@@ -26,12 +28,19 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# Local env files
+# Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# API keys
+secrets/
+
+# Patient data (sensitive PHI)
+patient_data/
+/data/patients/
 
 # TypeScript
 *.tsbuildinfo
@@ -39,9 +48,14 @@ yarn-error.*
 # Testing
 coverage/
 
+# Production
+build/
+
 # Editor
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # Logs
 logs/

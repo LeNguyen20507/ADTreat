@@ -1915,6 +1915,462 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ========================================
+   HOME TWO-COLUMN LAYOUT (Songs & Reminders Focus)
+   ======================================== */
+
+.home-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.home-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.home-right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Songs Card */
+.songs-card,
+.recordings-card {
+  background: white;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.songs-card .card-header,
+.recordings-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: #8B5CF6;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.songs-card .header-heart {
+  margin-left: auto;
+  color: #F472B6;
+}
+
+.recordings-card .card-header {
+  color: #EC4899;
+}
+
+.songs-list,
+.recordings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.song-item,
+.recording-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: linear-gradient(135deg, #F5F3FF 0%, white 100%);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+  text-align: left;
+}
+
+.song-item:hover,
+.recording-item:hover {
+  background: linear-gradient(135deg, #EDE9FE 0%, #F5F3FF 100%);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateX(2px);
+}
+
+.song-play-btn,
+.recording-play-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.recording-play-btn {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+
+.song-info,
+.recording-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title,
+.recording-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-artist,
+.recording-from {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.calming-badge {
+  font-size: 0.9rem;
+  color: #FBBF24;
+}
+
+/* Mini Medications Card */
+.meds-mini-card {
+  background: white;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.meds-mini-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  color: var(--primary-600);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.meds-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.med-compact-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  background: var(--neutral-50);
+  border-radius: 6px;
+}
+
+.med-compact-item .med-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.med-compact-item .med-dose {
+  color: var(--primary-500);
+  font-weight: 600;
+}
+
+.allergy-compact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  color: #DC2626;
+  background: #FEE2E2;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+/* Full Width Reminders Card with Tabs */
+.reminders-card-full {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.reminders-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px;
+  color: var(--primary-600);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--neutral-50);
+  border-bottom: 1px solid var(--neutral-100);
+}
+
+.add-reminder-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--primary-500);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-left: auto;
+}
+
+.add-reminder-btn:hover {
+  background: var(--primary-600);
+  transform: scale(1.05);
+}
+
+/* Reminder Tabs */
+.reminder-tabs {
+  display: flex;
+  padding: 8px;
+  gap: 6px;
+  background: var(--neutral-50);
+  border-bottom: 1px solid var(--neutral-100);
+}
+
+.reminder-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: 10px;
+  background: white;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.reminder-tab span:not(.tab-count) {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.reminder-tab.active {
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.reminder-tab.active span:not(.tab-count) {
+  color: var(--tab-color);
+  font-weight: 600;
+}
+
+.reminder-tab svg {
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.reminder-tab.active svg {
+  color: var(--tab-color);
+}
+
+.tab-count {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Reminder List Tabbed View */
+.reminder-list-tabbed {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.empty-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-tab svg {
+  color: var(--neutral-300);
+  margin-bottom: 10px;
+}
+
+.empty-tab p {
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.reminder-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reminder-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--neutral-50);
+  border-radius: 10px;
+  border: 1px solid var(--neutral-200);
+  transition: all var(--transition-fast);
+}
+
+.reminder-item-row:hover {
+  background: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.reminder-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--neutral-400);
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.reminder-checkbox:hover {
+  transform: scale(1.1);
+}
+
+.reminder-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.reminder-item-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.reminder-time-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  background: var(--primary-50);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.recurring-badge {
+  font-size: 0.7rem;
+  color: #F59E0B;
+}
+
+.reminder-item-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reminder-item-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.reminder-item-actions button {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  background: var(--neutral-100);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reminder-item-actions button:hover {
+  background: var(--primary-100);
+  color: var(--primary-600);
+}
+
+.reminder-item-actions button:last-child:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+/* Time of Day Label */
+.schedule-time-of-day {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--primary-600);
+  background: var(--primary-50);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Reminder Section Labels */
+.reminder-section {
+  margin-bottom: 12px;
+}
+
+.reminder-section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+/* ========================================
    LEARN PAGE STYLES
    ======================================== */
 
@@ -3004,4 +3460,692 @@ h1, h2, h3, h4, h5, h6 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ========================================
+   SOS MODAL - AI CALMING ASSISTANT
+   ======================================== */
+
+.sos-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+
+.sos-modal-content {
+  background: linear-gradient(180deg, #fff 0%, var(--primary-50) 100%);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: sosSlideUp 0.3s ease-out;
+}
+
+@keyframes sosSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.sos-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.sos-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sos-heart-icon {
+  color: #EF4444;
+  animation: heartPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.sos-header-title h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sos-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neutral-100);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.sos-close-btn:hover {
+  background: var(--neutral-200);
+  color: var(--text-primary);
+}
+
+.sos-patient-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--primary-50);
+  border-bottom: 1px solid var(--primary-100);
+}
+
+.sos-patient-name {
+  font-weight: 600;
+  color: var(--primary-700);
+  font-size: 0.95rem;
+}
+
+.sos-patient-age {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Call Section */
+.sos-call-section {
+  padding: 24px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sos-start-call-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 48px;
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.3);
+}
+
+.sos-start-call-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(20, 184, 166, 0.4);
+}
+
+.sos-start-call-btn span {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.sos-start-call-btn small {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* Call Status States */
+.sos-call-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.sos-call-status.connecting {
+  color: var(--primary-600);
+}
+
+.sos-call-status.ended {
+  color: var(--text-muted);
+}
+
+.sos-call-status.error {
+  color: #EF4444;
+}
+
+.sos-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sos-restart-btn {
+  margin-top: 8px;
+  padding: 12px 24px;
+  background: var(--primary-500);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.sos-restart-btn:hover {
+  background: var(--primary-600);
+}
+
+/* Active Call UI */
+.sos-call-active {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.sos-voice-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.sos-voice-wave {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 50px;
+}
+
+.sos-voice-wave span {
+  width: 6px;
+  height: 20px;
+  background: linear-gradient(180deg, var(--primary-400) 0%, var(--primary-600) 100%);
+  border-radius: 3px;
+  animation: soundWave 0.8s ease-in-out infinite;
+}
+
+.sos-voice-wave span:nth-child(1) { animation-delay: 0s; }
+.sos-voice-wave span:nth-child(2) { animation-delay: 0.1s; }
+.sos-voice-wave span:nth-child(3) { animation-delay: 0.2s; }
+.sos-voice-wave span:nth-child(4) { animation-delay: 0.3s; }
+.sos-voice-wave span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes soundWave {
+  0%, 100% { height: 20px; }
+  50% { height: 40px; }
+}
+
+.sos-call-status-text {
+  font-weight: 600;
+  color: var(--primary-600);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sos-call-message {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  min-height: 60px;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+.sos-call-controls {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.sos-control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  background: white;
+  border: 2px solid var(--neutral-200);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex: 1;
+  max-width: 100px;
+}
+
+.sos-control-btn span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.sos-control-btn:hover {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+}
+
+.sos-control-btn.active {
+  border-color: var(--primary-500);
+  background: var(--primary-100);
+}
+
+.sos-control-btn.end-call {
+  background: #FEE2E2;
+  border-color: #FECACA;
+  color: #EF4444;
+}
+
+.sos-control-btn.end-call span {
+  color: #EF4444;
+}
+
+.sos-control-btn.end-call:hover {
+  background: #FECACA;
+}
+
+/* Visual Elements Section */
+.sos-visual-section {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sos-photo-display,
+.sos-music-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--neutral-200);
+}
+
+.sos-photo-display svg,
+.sos-music-display svg {
+  color: var(--primary-500);
+  flex-shrink: 0;
+}
+
+.sos-photo-info,
+.sos-music-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sos-photo-name,
+.sos-song-title {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.sos-photo-relation,
+.sos-song-artist {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.sos-dismiss-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neutral-100);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sos-dismiss-btn:hover {
+  background: var(--neutral-200);
+}
+
+/* Quick Actions */
+.sos-quick-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+}
+
+.sos-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 2px solid var(--neutral-200);
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.sos-action-btn:hover {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+
+.sos-action-btn.music svg {
+  color: #A855F7;
+}
+
+.sos-action-btn.photo svg {
+  color: #3B82F6;
+}
+
+/* Emergency Contacts */
+.sos-emergency-contacts {
+  padding: 16px 24px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.sos-emergency-contacts h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.sos-contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sos-contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: white;
+  border: 2px solid var(--neutral-200);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+  text-align: left;
+}
+
+.sos-contact-btn:hover {
+  border-color: #22C55E;
+  background: #F0FDF4;
+}
+
+.sos-contact-btn svg {
+  color: #22C55E;
+  flex-shrink: 0;
+}
+
+.sos-contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sos-contact-name {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.sos-contact-relation {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.sos-call-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #22C55E;
+  text-transform: uppercase;
+}
+
+/* Calming Message */
+.sos-calming-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px 24px;
+  color: var(--primary-600);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sos-calming-message svg {
+  color: #EF4444;
+}
+
+/* ========================================
+   PATIENT SWITCHER MODAL
+   ======================================== */
+
+.patient-switcher-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 9999;
+  padding: 80px 16px 16px;
+  backdrop-filter: blur(2px);
+}
+
+.patient-switcher-modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: patientSwitcherSlide 0.25s ease-out;
+  overflow: hidden;
+}
+
+@keyframes patientSwitcherSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.patient-switcher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.patient-switcher-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.patient-switcher-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neutral-100);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.patient-switcher-close:hover {
+  background: var(--neutral-200);
+  color: var(--text-primary);
+}
+
+.patient-switcher-list {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.patient-switcher-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 2px solid var(--neutral-200);
+  border-radius: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+  text-align: left;
+}
+
+.patient-switcher-item:hover {
+  border-color: var(--patient-color, var(--primary-300));
+  background: color-mix(in srgb, var(--patient-color, var(--primary-500)) 5%, white);
+}
+
+.patient-switcher-item.active {
+  border-color: var(--patient-color, var(--primary-500));
+  background: color-mix(in srgb, var(--patient-color, var(--primary-500)) 8%, white);
+}
+
+.patient-switcher-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+}
+
+.patient-switcher-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.patient-switcher-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.patient-switcher-details {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.patient-switcher-stage {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.patient-switcher-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.patient-switcher-footer {
+  padding: 14px 20px 18px;
+  text-align: center;
+  border-top: 1px solid var(--neutral-100);
+}
+
+.patient-switcher-footer p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+/* Patient Avatar Emoji in Navbar */
+.patient-avatar-emoji {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.patient-avatar-emoji-lg {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+/* Updated Patient Photo in Home */
+.patient-photo {
+  border: 3px solid var(--primary-400);
+}
+
+.patient-avatar-btn {
+  border: 2px solid var(--primary-400);
+  transition: all var(--transition-fast);
+}
+
+.patient-avatar-btn:hover {
+  transform: scale(1.05);
 }
