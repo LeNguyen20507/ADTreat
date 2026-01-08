@@ -552,17 +552,18 @@
   color: #2C3E50;
 }
 
-/* Speaking Indicator */
-.vs-speaking-indicator {
+/* Status Bar - At bottom showing Processing/Listening */
+.vs-status-bar {
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #F5E6D3;
   flex-shrink: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.vs-speaking-badge {
+.vs-status-text {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -570,24 +571,47 @@
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
+  color: #5D6D7E;
 }
 
-.vs-speaking-ai {
+.vs-status-processing {
   background: #A7C7E7;
   color: #2C3E50;
 }
 
-.vs-speaking-patient {
-  background: #E8E8E8;
-  color: #2C3E50;
+.vs-status-listening {
+  background: #E8F4F8;
+  color: #4A7C7E;
 }
 
-.vs-pulse {
+.vs-status-pulse {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: currentColor;
   animation: vs-pulse-indicator 1s infinite;
+}
+
+/* Latest message highlight */
+.vs-message-latest {
+  box-shadow: 0 2px 8px rgba(74, 124, 126, 0.2);
+  border: 2px solid rgba(74, 124, 126, 0.3);
+}
+
+/* Caring prompt special styling */
+.vs-message-caring {
+  background: linear-gradient(135deg, #A7C7E7 0%, #98D7C2 100%) !important;
+  border-left: 4px solid #7FB069;
+}
+
+.vs-message-caring .vs-message-role {
+  color: #2C3E50;
+  font-weight: 700;
+}
+
+.vs-message-caring .vs-message-text {
+  font-style: italic;
+  color: #1A2530;
 }
 
 @keyframes vs-pulse-indicator {

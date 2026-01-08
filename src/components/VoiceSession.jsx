@@ -69,11 +69,23 @@ const VoiceSession = () => {
   const [showEndConfirm, setShowEndConfirm] = useState(false);
   const [showTips, setShowTips] = useState(true);
   const [callEndTime, setCallEndTime] = useState(null);
+  const [statusText, setStatusText] = useState(null); // For Processing.../Listening... text
+  const [lastAiMessage, setLastAiMessage] = useState(''); // Track last AI message for silence prompts
+  const [silenceCount, setSilenceCount] = useState(0); // Track how many times we've prompted due to silence
   
   // Refs
   const timerRef = useRef(null);
   const transcriptRef = useRef(null);
+  const silenceTimerRef = useRef(null);
   const isConfigured = isVapiConfigured();
+  
+  // Caring prompts that escalate with compassion
+  const caringPrompts = [
+    "Take your time, I'm right here with you. There's no rush at all.",
+    "I can see you might need a moment. I'm here whenever you're ready to talk. You matter to me.",
+    "I truly care about how you're doing. Please know I'm listening whenever you want to share.",
+    "You are so important, and I'm here for you. Whether you want to talk or just sit together quietly, I'm not going anywhere."
+  ];
 
   // Auto-scroll transcript
   useEffect(() => {
@@ -81,6 +93,61 @@ const VoiceSession = () => {
       transcriptRef.current.scrollTop = transcriptRef.current.scrollHeight;
     }
   }, [transcript]);
+
+  // Reset silence timer - call this when patient speaks or AI responds
+  const resetSilenceTimer = useCallback(() => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+    }
+    
+    // Only start silence timer during active call
+    if (phase === PHASE.ACTIVE_CALL && speakingIndicator !== 'ai') {
+      silenceTimerRef.current = setTimeout(() => {
+        // Patient has been quiet for 7 seconds
+        setSilenceCount(prev => {
+          const newCount = Math.min(prev + 1, caringPrompts.length - 1);
+          const caringMessage = caringPrompts[newCount];
+          
+          // Add caring prompt to transcript
+          setTranscript(prevTranscript => [
+            ...prevTranscript,
+            {
+              role: 'assistant',
+              text: caringMessage,
+              timestamp: new Date().toLocaleTimeString(),
+              isFinal: true,
+              isCaringPrompt: true
+            }
+          ]);
+          
+          // Use VAPI to speak the caring message
+          try {
+            vapi.say(caringMessage);
+          } catch (err) {
+            console.warn('[VoiceSession] Could not speak caring prompt:', err);
+          }
+          
+          return newCount;
+        });
+        
+        // Set up next silence check (escalate every 7 seconds)
+        resetSilenceTimer();
+      }, 7000); // 7 seconds of silence
+    }
+  }, [phase, speakingIndicator, caringPrompts]);
+
+  // Start silence timer when AI finishes speaking
+  useEffect(() => {
+    if (phase === PHASE.ACTIVE_CALL && speakingIndicator === null) {
+      resetSilenceTimer();
+    }
+    
+    return () => {
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+      }
+    };
+  }, [phase, speakingIndicator, resetSilenceTimer]);
 
   // Initialize MCP client
   useEffect(() => {
@@ -97,6 +164,8 @@ const VoiceSession = () => {
       setError(null);
       setExchangeCount(0);
       setSpeakingIndicator(null);
+      setSilenceCount(0);
+      setStatusText('Listening...');
       
       timerRef.current = setInterval(() => {
         setCallDuration(prev => prev + 1);
@@ -111,6 +180,12 @@ const VoiceSession = () => {
         timerRef.current = null;
       }
       
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+      
+      setStatusText(null);
       setCallEndTime(new Date());
       setPhase(PHASE.ENDING_CALL);
       setTimeout(() => setPhase(PHASE.SUMMARY), 1500);
@@ -119,11 +194,19 @@ const VoiceSession = () => {
     const handleSpeechStart = () => {
       console.log('[VAPI] AI speaking...');
       setSpeakingIndicator('ai');
+      setStatusText('Processing...');
+      
+      // Clear silence timer while AI is speaking
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+      }
     };
 
     const handleSpeechEnd = () => {
       console.log('[VAPI] AI finished speaking');
       setSpeakingIndicator(null);
+      setStatusText('Listening...');
+      setSilenceCount(0); // Reset silence count when AI finishes speaking
     };
 
     // Only show FINAL transcripts to avoid sensitivity
@@ -133,6 +216,13 @@ const VoiceSession = () => {
       if (message.type === 'transcript' && message.transcript) {
         if (message.role === 'user') {
           setSpeakingIndicator('patient');
+          setStatusText('Listening...');
+          
+          // Reset silence counter and timer when patient speaks
+          setSilenceCount(0);
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+          }
         }
         
         // ONLY add final transcripts
@@ -157,6 +247,7 @@ const VoiceSession = () => {
           
           if (message.role === 'assistant') {
             setExchangeCount(prev => Math.min(prev + 1, 3));
+            setLastAiMessage(message.transcript);
           }
         }
       }
@@ -208,6 +299,7 @@ const VoiceSession = () => {
       vapi.off('message', handleMessage);
       vapi.off('error', handleError);
       if (timerRef.current) clearInterval(timerRef.current);
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     };
   }, [phase]);
 
@@ -301,6 +393,9 @@ const VoiceSession = () => {
     setError(null);
     setErrorType(null);
     setShowEndConfirm(false);
+    setSilenceCount(0);
+    setStatusText(null);
+    setLastAiMessage('');
   };
 
   const restartWithSameProfile = () => {
@@ -310,6 +405,9 @@ const VoiceSession = () => {
     setExchangeCount(0);
     setPatientState(null);
     setError(null);
+    setSilenceCount(0);
+    setStatusText(null);
+    setLastAiMessage('');
   };
 
   const handleRetry = () => {
@@ -512,25 +610,24 @@ const VoiceSession = () => {
           </div>
         ) : (
           transcript.map((msg, idx) => (
-            <div key={idx} className={`vs-message ${msg.role === 'assistant' ? 'vs-message-ai' : 'vs-message-patient'}`}>
-              <span className="vs-message-role">{msg.role === 'assistant' ? 'AI Companion' : 'Patient'}</span>
+            <div 
+              key={idx} 
+              className={`vs-message ${msg.role === 'assistant' ? 'vs-message-ai' : 'vs-message-patient'} ${msg.isCaringPrompt ? 'vs-message-caring' : ''} ${idx === transcript.length - 1 ? 'vs-message-latest' : ''}`}
+            >
+              <span className="vs-message-role">
+                {msg.role === 'assistant' ? (msg.isCaringPrompt ? '💚 AI Companion' : 'AI Companion') : 'Patient'}
+              </span>
               <p className="vs-message-text">{msg.text}</p>
             </div>
           ))
         )}
       </div>
       
-      <div className="vs-speaking-indicator">
-        {speakingIndicator === 'ai' && (
-          <div className="vs-speaking-badge vs-speaking-ai">
-            <span className="vs-pulse"></span>
-            AI is responding...
-          </div>
-        )}
-        {speakingIndicator === 'patient' && (
-          <div className="vs-speaking-badge vs-speaking-patient">
-            <span className="vs-pulse"></span>
-            Patient speaking...
+      <div className="vs-status-bar">
+        {statusText && (
+          <div className={`vs-status-text ${speakingIndicator === 'ai' ? 'vs-status-processing' : 'vs-status-listening'}`}>
+            <span className="vs-status-pulse"></span>
+            {statusText}
           </div>
         )}
       </div>
