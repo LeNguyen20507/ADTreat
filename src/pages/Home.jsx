@@ -1,13 +1,13 @@
 /**
- * Home Page - Patient Dashboard with Tabbed Reminders
- * Focus on songs/sounds for calming
- * 4 tabbed reminder types: Medication, Appointment, Meal, Activity
+ * Home Page - Patient Dashboard with MCP Profile Data
+ * Shows patient profile info from MCP server + tabbed reminders
+ * No scrolling - everything fits on one page
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Pill, 
-  AlertTriangle,
   Activity,
   Brain,
   Plus,
@@ -18,15 +18,28 @@ import {
   Edit3,
   Trash2,
   Save,
-  Music,
-  Mic,
-  Play,
-  Heart
+  User,
+  Home as HomeIcon,
+  Heart,
+  MessageCircle,
+  CheckCircle,
+  AlertCircle,
+  Loader,
+  Phone
 } from 'lucide-react';
-import { usePatient } from '../context/PatientContext';
+import { 
+  fetchPatientProfile, 
+  initMcpClient, 
+  testMcpHealth,
+  isMcpConnected 
+} from '../utils/mcpClient';
 
 const Home = () => {
-  const { currentPatient } = usePatient();
+  // MCP Profile State
+  const [profile, setProfile] = useState(null);
+  const [mcpLoading, setMcpLoading] = useState(false);
+  const [mcpError, setMcpError] = useState(null);
+  const [mcpStatus, setMcpStatus] = useState('disconnected'); // 'disconnected', 'connecting', 'connected', 'error'
 
   // State for reminders - organized by type
   const [reminders, setReminders] = useState([]);
@@ -56,6 +69,87 @@ const Home = () => {
     { id: 'afternoon', label: 'Afternoon', icon: '☀️' },
     { id: 'evening', label: 'Evening', icon: '🌙' },
   ];
+
+  // Initialize MCP connection on mount
+  useEffect(() => {
+    const init = async () => {
+      setMcpStatus('connecting');
+      const connected = await initMcpClient();
+      setMcpStatus(connected ? 'connected' : 'error');
+    };
+    init();
+  }, []);
+
+  // MCP Test Functions
+  const handleTestMargaret = async () => {
+    setMcpLoading(true);
+    setMcpError(null);
+    console.log('=== TEST MCP - Fetch Margaret ===');
+    console.time('fetchPatientProfile');
+    
+    try {
+      const data = await fetchPatientProfile('margaret_chen');
+      console.timeEnd('fetchPatientProfile');
+      console.log('✅ Margaret Chen Profile:', data);
+      console.log('Fields present:', Object.keys(data));
+      console.log('calming_topics count:', data.calming_topics?.length);
+      setProfile(data);
+      setMcpStatus('connected');
+    } catch (error) {
+      console.timeEnd('fetchPatientProfile');
+      console.error('❌ Error:', error.message);
+      setMcpError(error.message);
+      setMcpStatus('error');
+    } finally {
+      setMcpLoading(false);
+    }
+  };
+
+  const handleTestRobert = async () => {
+    setMcpLoading(true);
+    setMcpError(null);
+    console.log('=== TEST MCP - Fetch Robert ===');
+    console.time('fetchPatientProfile');
+    
+    try {
+      const data = await fetchPatientProfile('robert_williams');
+      console.timeEnd('fetchPatientProfile');
+      console.log('✅ Robert Williams Profile:', data);
+      console.log('Fields present:', Object.keys(data));
+      console.log('calming_topics count:', data.calming_topics?.length);
+      setProfile(data);
+      setMcpStatus('connected');
+    } catch (error) {
+      console.timeEnd('fetchPatientProfile');
+      console.error('❌ Error:', error.message);
+      setMcpError(error.message);
+      setMcpStatus('error');
+    } finally {
+      setMcpLoading(false);
+    }
+  };
+
+  const handleTestInvalid = async () => {
+    setMcpLoading(true);
+    setMcpError(null);
+    console.log('=== TEST MCP - Invalid ID ===');
+    
+    try {
+      await fetchPatientProfile('invalid_patient_id');
+    } catch (error) {
+      console.log('✅ Error handling works:', error.message);
+      setMcpError(error.message);
+    } finally {
+      setMcpLoading(false);
+    }
+  };
+
+  const handleHealthCheck = async () => {
+    console.log('=== MCP Health Check ===');
+    const health = await testMcpHealth();
+    console.log('Health status:', health);
+    setMcpStatus(health.status === 'healthy' ? 'connected' : 'error');
+  };
 
   const getTypeInfo = (type) => {
     return reminderTypes.find(t => t.id === type) || reminderTypes[0];
@@ -134,180 +228,185 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* Patient Identity Section */}
-      <div className="patient-identity" style={{ '--patient-color': currentPatient?.color }}>
-        <div 
-          className="patient-photo"
-          style={{ 
-            background: `${currentPatient?.color}15`,
-            borderColor: currentPatient?.color 
-          }}
-        >
-          <span className="patient-avatar-emoji-lg">{currentPatient?.avatar || '👤'}</span>
+      {/* MCP Test Section - Temporary for Stage 1 */}
+      <div className="mcp-test-section">
+        <div className="mcp-test-header">
+          <span className="mcp-label">MCP Server Test</span>
+          <span className={`mcp-status ${mcpStatus}`}>
+            {mcpStatus === 'connecting' && <Loader size={12} className="spin" />}
+            {mcpStatus === 'connected' && <CheckCircle size={12} />}
+            {mcpStatus === 'error' && <AlertCircle size={12} />}
+            {mcpStatus}
+          </span>
         </div>
-        <div className="patient-info">
-          <h1 className="patient-name">{currentPatient?.preferredName || 'Patient'}</h1>
-          <span className="patient-stage">{currentPatient?.stage || 'Unknown'} • Age {currentPatient?.age || '?'}</span>
+        <div className="mcp-test-buttons">
+          <button 
+            className="mcp-test-btn" 
+            onClick={handleTestMargaret}
+            disabled={mcpLoading}
+          >
+            {mcpLoading ? <Loader size={14} className="spin" /> : null}
+            Test Margaret
+          </button>
+          <button 
+            className="mcp-test-btn" 
+            onClick={handleTestRobert}
+            disabled={mcpLoading}
+          >
+            Test Robert
+          </button>
+          <button 
+            className="mcp-test-btn error" 
+            onClick={handleTestInvalid}
+            disabled={mcpLoading}
+          >
+            Test Invalid
+          </button>
         </div>
+        {mcpError && (
+          <div className="mcp-error-msg">
+            <AlertCircle size={12} />
+            {mcpError}
+          </div>
+        )}
+        {/* Link to VAPI Voice Test (Stage 2) */}
+        <Link to="/test-call" className="mcp-test-btn vapi-link">
+          <Phone size={14} />
+          VAPI Voice Test →
+        </Link>
       </div>
 
-      {/* Two Column Layout */}
-      <div className="home-two-column">
-        {/* Left Column - Songs & Sounds */}
-        <div className="home-left-column">
-          {/* Favorite Songs Card */}
-          <div className="home-card songs-card">
-            <div className="card-header">
-              <Music size={16} />
-              <span>Calming Songs</span>
-              <Heart size={14} className="header-heart" />
+      {/* Patient Basic Info - From MCP Profile */}
+      <div className="patient-header-simple">
+        <h1 className="patient-name-lg">
+          {profile ? profile.name : 'Select a Patient'}
+        </h1>
+        {profile && (
+          <span className="patient-meta">
+            Age {profile.age} • Preferred: "{profile.preferred_address}"
+          </span>
+        )}
+      </div>
+
+      {/* Profile Data Cards - 3 Main Things */}
+      {profile && (
+        <div className="profile-cards-row">
+          {/* Core Identity Card */}
+          <div className="profile-card identity-card">
+            <div className="profile-card-header">
+              <User size={14} />
+              <span>Core Identity</span>
             </div>
-            <div className="card-content songs-list">
-              {(currentPatient?.favoriteSongs || []).map((song, idx) => (
-                <button key={idx} className="song-item">
-                  <div className="song-play-btn">
-                    <Play size={12} />
-                  </div>
-                  <div className="song-info">
-                    <span className="song-title">{song.title}</span>
-                    <span className="song-artist">{song.artist}</span>
-                  </div>
-                  {song.calming === 'very_high' && (
-                    <span className="calming-badge">★</span>
-                  )}
-                </button>
-              ))}
-            </div>
+            <p className="profile-card-text">{profile.core_identity}</p>
           </div>
 
-          {/* Voice Recordings Card */}
-          <div className="home-card recordings-card">
-            <div className="card-header">
-              <Mic size={16} />
-              <span>Family Voices</span>
+          {/* Safe Place Card */}
+          <div className="profile-card safe-place-card">
+            <div className="profile-card-header">
+              <HomeIcon size={14} />
+              <span>Safe Place</span>
             </div>
-            <div className="card-content recordings-list">
-              {(currentPatient?.voiceRecordings || []).map((recording, idx) => (
-                <button key={idx} className="recording-item">
-                  <div className="recording-play-btn">
-                    <Play size={10} />
-                  </div>
-                  <div className="recording-info">
-                    <span className="recording-title">{recording.title}</span>
-                    <span className="recording-from">{recording.from}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+            <p className="profile-card-text">{profile.safe_place}</p>
           </div>
 
-          {/* Medications Mini Card */}
-          <div className="home-card meds-mini-card">
-            <div className="card-header">
-              <Pill size={14} />
-              <span>Medications</span>
+          {/* Calming Topics Card */}
+          <div className="profile-card calming-card">
+            <div className="profile-card-header">
+              <Heart size={14} />
+              <span>Calming Topics</span>
             </div>
-            <div className="card-content meds-compact">
-              {(currentPatient?.medications || []).slice(0, 2).map((med, idx) => (
-                <div key={idx} className="med-compact-item">
-                  <span className="med-name">{med.name}</span>
-                  <span className="med-dose">{med.dosage}</span>
-                </div>
+            <ul className="calming-topics-list">
+              {profile.calming_topics.slice(0, 3).map((topic, idx) => (
+                <li key={idx}>{topic}</li>
               ))}
-              {(currentPatient?.allergies?.length > 0) && (
-                <div className="allergy-compact">
-                  <AlertTriangle size={10} />
-                  <span>{currentPatient.allergies.join(', ')}</span>
-                </div>
-              )}
-            </div>
+            </ul>
           </div>
         </div>
+      )}
 
-        {/* Right Column - Reminders with Tabs */}
-        <div className="home-right-column">
-          <div className="home-card reminders-card-full">
-            <div className="card-header reminders-header">
-              <Brain size={16} />
-              <span>Today's Schedule</span>
-              <button className="add-reminder-btn" onClick={handleAddNew}>
-                <Plus size={14} />
-              </button>
-            </div>
+      {/* Reminders Section - Full Width */}
+      <div className="reminders-section">
+        <div className="home-card reminders-card-full">
+          <div className="card-header reminders-header">
+            <Brain size={16} />
+            <span>Today's Schedule</span>
+            <button className="add-reminder-btn" onClick={handleAddNew}>
+              <Plus size={14} />
+            </button>
+          </div>
 
-            {/* Reminder Type Tabs */}
-            <div className="reminder-tabs">
-              {reminderTypes.map(({ id, label, icon: Icon, color }) => {
-                const count = getTabCount(id);
-                return (
-                  <button
-                    key={id}
-                    className={`reminder-tab ${activeTab === id ? 'active' : ''}`}
-                    onClick={() => setActiveTab(id)}
-                    style={{ 
-                      '--tab-color': color,
-                      borderColor: activeTab === id ? color : 'transparent'
-                    }}
-                  >
-                    <Icon size={16} />
-                    <span>{label}</span>
-                    {count > 0 && (
-                      <span className="tab-count" style={{ background: color }}>{count}</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Reminder Type Tabs */}
+          <div className="reminder-tabs">
+            {reminderTypes.map(({ id, label, icon: Icon, color }) => {
+              const count = getTabCount(id);
+              return (
+                <button
+                  key={id}
+                  className={`reminder-tab ${activeTab === id ? 'active' : ''}`}
+                  onClick={() => setActiveTab(id)}
+                  style={{ 
+                    '--tab-color': color,
+                    borderColor: activeTab === id ? color : 'transparent'
+                  }}
+                >
+                  <Icon size={16} />
+                  <span>{label}</span>
+                  {count > 0 && (
+                    <span className="tab-count" style={{ background: color }}>{count}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-            {/* Reminder List for Active Tab */}
-            <div className="card-content reminder-list-tabbed">
-              {currentTabReminders.length === 0 ? (
-                <div className="empty-tab">
-                  <Clock size={20} />
-                  <p>No {getTypeInfo(activeTab).label.toLowerCase()} reminders</p>
-                  <button className="add-first-btn" onClick={handleAddNew}>
-                    <Plus size={12} />
-                    Add {getTypeInfo(activeTab).label}
-                  </button>
-                </div>
-              ) : (
-                <div className="reminder-items-list">
-                  {currentTabReminders.map((reminder) => {
-                    const typeInfo = getTypeInfo(reminder.type);
-                    const timeLabel = timeOfDayOptions.find(t => t.id === reminder.timeOfDay);
-                    
-                    return (
-                      <div key={reminder.id} className="reminder-item-row">
-                        <button 
-                          className="reminder-checkbox"
-                          onClick={() => toggleComplete(reminder.id)}
-                          style={{ borderColor: typeInfo.color }}
-                        />
-                        <div className="reminder-item-content">
-                          <div className="reminder-item-top">
-                            <span className="reminder-time-badge">
-                              {timeLabel?.icon} {timeLabel?.label}
-                            </span>
-                            {reminder.isRecurring && (
-                              <span className="recurring-badge">↻</span>
-                            )}
-                          </div>
-                          <span className="reminder-item-title">{reminder.title}</span>
+          {/* Reminder List for Active Tab */}
+          <div className="card-content reminder-list-tabbed">
+            {currentTabReminders.length === 0 ? (
+              <div className="empty-tab">
+                <Clock size={20} />
+                <p>No {getTypeInfo(activeTab).label.toLowerCase()} reminders</p>
+                <button className="add-first-btn" onClick={handleAddNew}>
+                  <Plus size={12} />
+                  Add {getTypeInfo(activeTab).label}
+                </button>
+              </div>
+            ) : (
+              <div className="reminder-items-list">
+                {currentTabReminders.map((reminder) => {
+                  const typeInfo = getTypeInfo(reminder.type);
+                  const timeLabel = timeOfDayOptions.find(t => t.id === reminder.timeOfDay);
+                  
+                  return (
+                    <div key={reminder.id} className="reminder-item-row">
+                      <button 
+                        className="reminder-checkbox"
+                        onClick={() => toggleComplete(reminder.id)}
+                        style={{ borderColor: typeInfo.color }}
+                      />
+                      <div className="reminder-item-content">
+                        <div className="reminder-item-top">
+                          <span className="reminder-time-badge">
+                            {timeLabel?.icon} {timeLabel?.label}
+                          </span>
+                          {reminder.isRecurring && (
+                            <span className="recurring-badge">↻</span>
+                          )}
                         </div>
-                        <div className="reminder-item-actions">
-                          <button onClick={() => handleEdit(reminder)}>
-                            <Edit3 size={12} />
-                          </button>
-                          <button onClick={() => handleDelete(reminder.id)}>
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
+                        <span className="reminder-item-title">{reminder.title}</span>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                      <div className="reminder-item-actions">
+                        <button onClick={() => handleEdit(reminder)}>
+                          <Edit3 size={12} />
+                        </button>
+                        <button onClick={() => handleDelete(reminder.id)}>
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,12 +1,13 @@
 /**
  * ADTreat - Alzheimer Care Support App
  * Main Application Component
- * Single page app focused on songs/sounds for calming
+ * MCP + VAPI Integration for grounding conversations
  */
 
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components';
 import { Home } from './pages';
+import VoiceCallTest from './components/VoiceCallTest';
 
 function App() {
   return (
@@ -14,9 +15,10 @@ function App() {
       {/* Global Navigation Bar - Always visible at top */}
       <Navbar />
       
-      {/* Main Route - Home only */}
+      {/* Main Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/test-call" element={<VoiceCallTest />} />
       </Routes>
     </div>
   );
