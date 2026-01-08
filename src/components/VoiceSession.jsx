@@ -214,10 +214,8 @@ const VoiceSession = () => {
       console.log('[VAPI] Message:', message);
       
       if (message.type === 'transcript' && message.transcript) {
-        if (message.role === 'user') {
-          setSpeakingIndicator('patient');
-          setStatusText('Listening...');
-          
+        // When user speaks, just reset silence timer (don't show their text)
+        if (message.role === 'user' && message.transcriptType === 'final') {
           // Reset silence counter and timer when patient speaks
           setSilenceCount(0);
           if (silenceTimerRef.current) {
@@ -225,8 +223,8 @@ const VoiceSession = () => {
           }
         }
         
-        // ONLY add final transcripts
-        if (message.transcriptType === 'final') {
+        // ONLY add AI (assistant) final transcripts to the display
+        if (message.transcriptType === 'final' && message.role === 'assistant') {
           setTranscript(prev => {
             const exists = prev.some(t => 
               t.text === message.transcript && 
@@ -243,12 +241,8 @@ const VoiceSession = () => {
             }];
           });
           
-          setTimeout(() => setSpeakingIndicator(null), 500);
-          
-          if (message.role === 'assistant') {
-            setExchangeCount(prev => Math.min(prev + 1, 3));
-            setLastAiMessage(message.transcript);
-          }
+          setExchangeCount(prev => Math.min(prev + 1, 3));
+          setLastAiMessage(message.transcript);
         }
       }
       
@@ -606,16 +600,16 @@ const VoiceSession = () => {
         {transcript.length === 0 ? (
           <div className="vs-transcript-empty">
             <MessageCircle size={40} />
-            <p>Waiting for conversation to begin...</p>
+            <p>Waiting for AI to speak...</p>
           </div>
         ) : (
           transcript.map((msg, idx) => (
             <div 
               key={idx} 
-              className={`vs-message ${msg.role === 'assistant' ? 'vs-message-ai' : 'vs-message-patient'} ${msg.isCaringPrompt ? 'vs-message-caring' : ''} ${idx === transcript.length - 1 ? 'vs-message-latest' : ''}`}
+              className={`vs-message vs-message-ai ${msg.isCaringPrompt ? 'vs-message-caring' : ''} ${idx === transcript.length - 1 ? 'vs-message-latest' : ''}`}
             >
               <span className="vs-message-role">
-                {msg.role === 'assistant' ? (msg.isCaringPrompt ? '💚 AI Companion' : 'AI Companion') : 'Patient'}
+                {msg.isCaringPrompt ? '💚 AI Companion' : 'AI Companion'}
               </span>
               <p className="vs-message-text">{msg.text}</p>
             </div>
@@ -624,12 +618,10 @@ const VoiceSession = () => {
       </div>
       
       <div className="vs-status-bar">
-        {statusText && (
-          <div className={`vs-status-text ${speakingIndicator === 'ai' ? 'vs-status-processing' : 'vs-status-listening'}`}>
-            <span className="vs-status-pulse"></span>
-            {statusText}
-          </div>
-        )}
+        <div className="vs-status-text vs-status-listening">
+          <span className="vs-status-pulse"></span>
+          Listening...
+        </div>
       </div>
       
       <div className="vs-call-controls">

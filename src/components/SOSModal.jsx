@@ -111,8 +111,9 @@ const SOSModal = ({ isOpen, onClose }) => {
     const handleCallStart = () => {
       console.log('[SOS] Call started');
       setCallStatus('connected');
-      setCurrentMessage('Connected. AI assistant is speaking...');
-      setShowTranscript(false);
+      setCurrentMessage('Listening...');
+      setVisibleMessage('Listening...');
+      setShowTranscript(true);
     };
 
     const handleCallEnd = () => {
@@ -127,17 +128,14 @@ const SOSModal = ({ isOpen, onClose }) => {
       console.log('[SOS] Message:', message.type, message.role);
       
       if (message.type === 'transcript') {
-        if (message.role === 'assistant') {
-          // AI is speaking - show immediately with "AI:" prefix
+        if (message.role === 'assistant' && message.transcriptType === 'final') {
+          // AI is speaking - show only AI messages (no prefix needed)
           const transcript = message.transcript;
           setCurrentMessage(transcript);
-          setVisibleMessage(`AI: ${transcript}`);
+          setVisibleMessage(transcript);
           setShowTranscript(true);
-        } else if (message.role === 'user') {
-          // User is speaking - show immediately with "You:" prefix
-          setVisibleMessage(`You: ${message.transcript}`);
-          setShowTranscript(true);
-          
+        } else if (message.role === 'user' && message.transcriptType === 'final') {
+          // User speaking - just reset silence timer, don't show their text
           // Clear and restart silence timer
           if (silenceTimeoutRef.current) {
             clearTimeout(silenceTimeoutRef.current);
@@ -167,8 +165,7 @@ const SOSModal = ({ isOpen, onClose }) => {
 
     const handleSpeechStart = () => {
       console.log('[SOS] Speech started');
-      setVisibleMessage('Listening...');
-      setShowTranscript(true);
+      // Keep showing current AI message or Listening...
     };
 
     const handleSpeechEnd = () => {
@@ -179,7 +176,7 @@ const SOSModal = ({ isOpen, onClose }) => {
       }
       silenceTimeoutRef.current = setTimeout(() => {
         console.log('[SOS] 3s silence - AI can proceed');
-        setVisibleMessage('Processing...');
+        // Don't change the message, keep showing the last AI response
       }, SILENCE_THRESHOLD_MS);
     };
 
