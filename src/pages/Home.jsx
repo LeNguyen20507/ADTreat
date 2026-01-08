@@ -1,11 +1,10 @@
 /**
- * Home Page - Patient Dashboard with MCP Profile Data
- * Shows patient profile info from MCP server + tabbed reminders
- * No scrolling - everything fits on one page
+ * Home Page - Patient Dashboard
+ * Shows patient profile info + tabbed reminders
+ * Patient data comes from PatientContext (top-right switcher)
  */
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { 
   Pill, 
   Activity,
@@ -24,22 +23,13 @@ import {
   MessageCircle,
   CheckCircle,
   AlertCircle,
-  Loader,
-  Phone
+  Loader
 } from 'lucide-react';
-import { 
-  fetchPatientProfile, 
-  initMcpClient, 
-  testMcpHealth,
-  isMcpConnected 
-} from '../utils/mcpClient';
+import { usePatient } from '../context/PatientContext';
 
 const Home = () => {
-  // MCP Profile State
-  const [profile, setProfile] = useState(null);
-  const [mcpLoading, setMcpLoading] = useState(false);
-  const [mcpError, setMcpError] = useState(null);
-  const [mcpStatus, setMcpStatus] = useState('disconnected'); // 'disconnected', 'connecting', 'connected', 'error'
+  // Get current patient from context (synced with top-right switcher)
+  const { currentPatient } = usePatient();
 
   // State for reminders - organized by type
   const [reminders, setReminders] = useState([]);
@@ -69,87 +59,6 @@ const Home = () => {
     { id: 'afternoon', label: 'Afternoon', icon: '☀️' },
     { id: 'evening', label: 'Evening', icon: '🌙' },
   ];
-
-  // Initialize MCP connection on mount
-  useEffect(() => {
-    const init = async () => {
-      setMcpStatus('connecting');
-      const connected = await initMcpClient();
-      setMcpStatus(connected ? 'connected' : 'error');
-    };
-    init();
-  }, []);
-
-  // MCP Test Functions
-  const handleTestMargaret = async () => {
-    setMcpLoading(true);
-    setMcpError(null);
-    console.log('=== TEST MCP - Fetch Margaret ===');
-    console.time('fetchPatientProfile');
-    
-    try {
-      const data = await fetchPatientProfile('margaret_chen');
-      console.timeEnd('fetchPatientProfile');
-      console.log('✅ Margaret Chen Profile:', data);
-      console.log('Fields present:', Object.keys(data));
-      console.log('calming_topics count:', data.calming_topics?.length);
-      setProfile(data);
-      setMcpStatus('connected');
-    } catch (error) {
-      console.timeEnd('fetchPatientProfile');
-      console.error('❌ Error:', error.message);
-      setMcpError(error.message);
-      setMcpStatus('error');
-    } finally {
-      setMcpLoading(false);
-    }
-  };
-
-  const handleTestRobert = async () => {
-    setMcpLoading(true);
-    setMcpError(null);
-    console.log('=== TEST MCP - Fetch Robert ===');
-    console.time('fetchPatientProfile');
-    
-    try {
-      const data = await fetchPatientProfile('robert_williams');
-      console.timeEnd('fetchPatientProfile');
-      console.log('✅ Robert Williams Profile:', data);
-      console.log('Fields present:', Object.keys(data));
-      console.log('calming_topics count:', data.calming_topics?.length);
-      setProfile(data);
-      setMcpStatus('connected');
-    } catch (error) {
-      console.timeEnd('fetchPatientProfile');
-      console.error('❌ Error:', error.message);
-      setMcpError(error.message);
-      setMcpStatus('error');
-    } finally {
-      setMcpLoading(false);
-    }
-  };
-
-  const handleTestInvalid = async () => {
-    setMcpLoading(true);
-    setMcpError(null);
-    console.log('=== TEST MCP - Invalid ID ===');
-    
-    try {
-      await fetchPatientProfile('invalid_patient_id');
-    } catch (error) {
-      console.log('✅ Error handling works:', error.message);
-      setMcpError(error.message);
-    } finally {
-      setMcpLoading(false);
-    }
-  };
-
-  const handleHealthCheck = async () => {
-    console.log('=== MCP Health Check ===');
-    const health = await testMcpHealth();
-    console.log('Health status:', health);
-    setMcpStatus(health.status === 'healthy' ? 'connected' : 'error');
-  };
 
   const getTypeInfo = (type) => {
     return reminderTypes.find(t => t.id === type) || reminderTypes[0];
@@ -228,98 +137,32 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* MCP Test Section - Temporary for Stage 1 */}
-      <div className="mcp-test-section">
-        <div className="mcp-test-header">
-          <span className="mcp-label">MCP Server Test</span>
-          <span className={`mcp-status ${mcpStatus}`}>
-            {mcpStatus === 'connecting' && <Loader size={12} className="spin" />}
-            {mcpStatus === 'connected' && <CheckCircle size={12} />}
-            {mcpStatus === 'error' && <AlertCircle size={12} />}
-            {mcpStatus}
-          </span>
-        </div>
-        <div className="mcp-test-buttons">
-          <button 
-            className="mcp-test-btn" 
-            onClick={handleTestMargaret}
-            disabled={mcpLoading}
-          >
-            {mcpLoading ? <Loader size={14} className="spin" /> : null}
-            Test Margaret
-          </button>
-          <button 
-            className="mcp-test-btn" 
-            onClick={handleTestRobert}
-            disabled={mcpLoading}
-          >
-            Test Robert
-          </button>
-          <button 
-            className="mcp-test-btn error" 
-            onClick={handleTestInvalid}
-            disabled={mcpLoading}
-          >
-            Test Invalid
-          </button>
-        </div>
-        {mcpError && (
-          <div className="mcp-error-msg">
-            <AlertCircle size={12} />
-            {mcpError}
-          </div>
-        )}
-        {/* Link to VAPI Voice Test (Stage 2) */}
-        <Link to="/test-call" className="mcp-test-btn vapi-link">
-          <Phone size={14} />
-          VAPI Voice Test →
-        </Link>
-      </div>
-
-      {/* Patient Basic Info - From MCP Profile */}
+      {/* Patient Basic Info - From Current Patient Context */}
       <div className="patient-header-simple">
         <h1 className="patient-name-lg">
-          {profile ? profile.name : 'Select a Patient'}
+          {currentPatient ? currentPatient.name : 'Select a Patient'}
         </h1>
-        {profile && (
+        {currentPatient && (
           <span className="patient-meta">
-            Age {profile.age} • Preferred: "{profile.preferred_address}"
+            {currentPatient.avatar} Age {currentPatient.age} • "{currentPatient.preferredName}" • {currentPatient.stage}
           </span>
         )}
       </div>
 
-      {/* Profile Data Cards - 3 Main Things */}
-      {profile && (
-        <div className="profile-cards-row">
-          {/* Core Identity Card */}
-          <div className="profile-card identity-card">
-            <div className="profile-card-header">
-              <User size={14} />
-              <span>Core Identity</span>
-            </div>
-            <p className="profile-card-text">{profile.core_identity}</p>
+      {/* Patient Info Cards - From Selected Profile */}
+      {currentPatient && (
+        <div className="patient-info-cards">
+          <div className="info-card location-card">
+            <HomeIcon size={14} />
+            <span>{currentPatient.location}</span>
           </div>
-
-          {/* Safe Place Card */}
-          <div className="profile-card safe-place-card">
-            <div className="profile-card-header">
-              <HomeIcon size={14} />
-              <span>Safe Place</span>
-            </div>
-            <p className="profile-card-text">{profile.safe_place}</p>
+          <div className="info-card medications-card">
+            <Pill size={14} />
+            <span>{currentPatient.medications?.length || 0} Medications</span>
           </div>
-
-          {/* Calming Topics Card */}
-          <div className="profile-card calming-card">
-            <div className="profile-card-header">
-              <Heart size={14} />
-              <span>Calming Topics</span>
-            </div>
-            <ul className="calming-topics-list">
-              {profile.calming_topics.slice(0, 3).map((topic, idx) => (
-                <li key={idx}>{topic}</li>
-              ))}
-            </ul>
+          <div className="info-card allergies-card">
+            <AlertCircle size={14} />
+            <span>Allergies: {currentPatient.allergies?.join(', ') || 'None'}</span>
           </div>
         </div>
       )}

@@ -7,7 +7,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components';
 import { Home } from './pages';
-import VoiceCallTest from './components/VoiceCallTest';
+import VoiceSession from './components/VoiceSession';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
       {/* Main Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/test-call" element={<VoiceCallTest />} />
+        <Route path="/voice-session" element={<VoiceSession />} />
       </Routes>
     </div>
   );

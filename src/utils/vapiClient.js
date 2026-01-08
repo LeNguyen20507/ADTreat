@@ -2,12 +2,15 @@
  * VAPI Client Utility
  * Handles voice calling functionality for Alzheimer's grounding conversations
  * 
+ * Stage 3: Profile-driven conversations with 3-exchange structure
+ * 
  * Setup:
  * 1. Get API key from https://vapi.ai (Dashboard > API Keys)
  * 2. Add to .env.local: VITE_VAPI_API_KEY=your_key_here
  */
 
 import Vapi from '@vapi-ai/web';
+import { generateSystemPrompt, logPromptDetails, validatePromptComplete } from './promptGenerator';
 
 // Check if API key is configured
 const apiKey = import.meta.env.VITE_VAPI_API_KEY;
@@ -51,86 +54,111 @@ export function createTestAssistant() {
   return {
     model: {
       provider: "openai",
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: `You are a warm, friendly AI assistant. Keep responses very short (1 sentence). You're testing audio quality.`
+          content: "You are a friendly assistant. Keep responses to one short sentence."
         }
       ],
       temperature: 0.7
     },
     voice: {
-      provider: "playht",
-      voiceId: "jennifer",
+      provider: "azure",
+      voiceId: "en-US-JennyNeural",
     },
-    transcriber: {
-      provider: "deepgram",
-      model: "nova-2",
-      language: "en-US"
-    },
-    firstMessage: "Hello! Can you hear me?",
+    firstMessage: "Hello, can you hear me?",
     silenceTimeoutSeconds: 30,
-    maxDurationSeconds: 180,
+    maxDurationSeconds: 120,
   };
 }
 
 /**
  * Create an assistant with personalized profile data
- * This will be used in Stage 3 when we integrate MCP profiles
+ * Stage 3: Full integration with MCP profiles
  * @param {object} profile - Patient profile from MCP
  * @returns {object} Assistant configuration
  */
 export function createPersonalizedAssistant(profile) {
-  const voiceId = profile.voice_preference === 'warm_female' 
-    ? 'EXAVITQu4vr4xnSDxMaL' // "Sarah" - warm female
-    : 'pNInz6obpgDQGcFmaJgB'; // "Adam" - warm male
+  if (!profile) {
+    throw new Error('Profile is required to create personalized assistant');
+  }
+
+  // Generate dynamic system prompt from profile
+  const systemPrompt = generateSystemPrompt(profile);
+  
+  // Log prompt for debugging (Task 3.1 testing requirement)
+  logPromptDetails(systemPrompt, profile.name);
+  
+  // Validate no placeholders remain
+  if (!validatePromptComplete(systemPrompt)) {
+    console.warn('[VAPI] Warning: System prompt may have unresolved placeholders');
+  }
+
+  // Voice selection based on profile preference (Task 3.2)
+  // Using Azure voices which work reliably
+  const voiceConfig = profile.voice_preference === 'warm_female' 
+    ? { provider: "azure", voiceId: "en-US-JennyNeural" }  // Warm female
+    : { provider: "azure", voiceId: "en-US-GuyNeural" };    // Warm male
+
+  console.log(`[VAPI] Using ${profile.voice_preference} voice:`, voiceConfig.voiceId);
 
   return {
+    name: `${profile.name} Companion`,
     model: {
-      provider: "openai",
-      model: "gpt-4-turbo",
+      provider: "anthropic",
+      model: "claude-sonnet-4-20250514",
       messages: [
         {
           role: "system",
-          content: `You are a warm, comforting AI companion helping ${profile.preferred_address} feel safe and calm.
-
-PATIENT CONTEXT:
-- Name: ${profile.name} (call them "${profile.preferred_address}")
-- Age: ${profile.age}
-- Background: ${profile.core_identity}
-- Safe Place: ${profile.safe_place}
-- Comfort Memory: ${profile.comfort_memory}
-- Common Trigger: ${profile.common_trigger}
-
-CALMING TOPICS (use these to redirect anxiety):
-${profile.calming_topics.map((topic, i) => `${i + 1}. ${topic}`).join('\n')}
-
-CONVERSATION GUIDELINES:
-- Speak slowly, warmly, and reassuringly
-- Keep responses to 1-2 short sentences
-- If they seem anxious about "${profile.common_trigger}", gently redirect to calming topics
-- Reference their safe place and comfort memories naturally
-- Never argue or contradict them - validate feelings first
-- Use their preferred name: "${profile.preferred_address}"
-- Be patient with repetition - it's normal`
+          content: systemPrompt
         }
       ],
-      temperature: 0.6
+      temperature: 0.6,
+      // Function definitions for end_conversation
+      functions: [
+        {
+          name: "end_conversation",
+          description: "Call this function after completing all 3 exchanges and delivering the closing statement. This will gracefully end the voice conversation.",
+          parameters: {
+            type: "object",
+            properties: {
+              exchange_count: {
+                type: "number",
+                description: "The number of exchanges completed (should be 3)"
+              },
+              patient_state: {
+                type: "string",
+                enum: ["calm", "slightly_agitated", "very_agitated"],
+                description: "Assessment of the patient's emotional state at end of conversation"
+              }
+            },
+            required: ["exchange_count", "patient_state"]
+          }
+        }
+      ]
     },
-    voice: {
-      provider: "11labs",
-      voiceId: voiceId,
-    },
+    voice: voiceConfig,
     transcriber: {
       provider: "deepgram",
       model: "nova-2",
       language: "en-US"
     },
-    firstMessage: `Hello ${profile.preferred_address}. I'm here with you. How are you feeling right now?`,
-    endCallFunctionEnabled: false,
-    silenceTimeoutSeconds: 45, // Longer timeout for patients who may pause
-    maxDurationSeconds: 600, // 10 minutes for real calls
+    // First message uses patient's preferred_address
+    firstMessage: `Hi ${profile.preferred_address}, I'm here to talk with you for a moment.`,
+    
+    // Call settings
+    silenceTimeoutSeconds: 45,      // Longer timeout for patients who may pause
+    maxDurationSeconds: 240,        // 4 minutes max (safety timeout)
+    responseDelaySeconds: 0.5,      // Slight delay for natural pacing
+    endCallFunctionEnabled: false,  // We handle ending via function call
+    
+    // Metadata for tracking
+    metadata: {
+      patientId: profile.patient_id,
+      patientName: profile.name,
+      voicePreference: profile.voice_preference
+    }
   };
 }
 

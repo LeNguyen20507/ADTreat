@@ -59,7 +59,6 @@ const Navbar = () => {
       <SOSModal 
         isOpen={showSOSModal}
         onClose={() => setShowSOSModal(false)}
-        patientId={currentPatientId}
       />
 
       {/* Patient Switcher Modal */}

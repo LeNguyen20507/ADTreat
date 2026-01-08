@@ -1392,62 +1392,40 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ========================================
-   MCP TEST SECTION (Temporary - Stage 1)
+   VOICE SESSION CTA
    ======================================== */
 
-.mcp-test-section {
-  background: #1E293B;
-  border-radius: 10px;
-  padding: 10px 12px;
+.voice-session-cta {
+  padding: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: center;
 }
 
-.mcp-test-header {
+.voice-session-main-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.mcp-label {
-  font-size: 0.7rem;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #4A7C7E 0%, #3A6C6E 100%);
+  color: white;
+  font-size: 18px;
   font-weight: 600;
-  color: #94A3B8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  padding: 18px 40px;
+  border-radius: 16px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(74, 124, 126, 0.4);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
 }
 
-.mcp-status {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 4px;
+.voice-session-main-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 124, 126, 0.5);
+  background: linear-gradient(135deg, #3A6C6E 0%, #2A5C5E 100%);
 }
 
-.mcp-status.disconnected {
-  background: #374151;
-  color: #9CA3AF;
-}
-
-.mcp-status.connecting {
-  background: #FEF3C7;
-  color: #D97706;
-}
-
-.mcp-status.connected {
-  background: #D1FAE5;
-  color: #059669;
-}
-
-.mcp-status.error {
-  background: #FEE2E2;
-  color: #DC2626;
-}
+/* ========================================
 
 .mcp-test-buttons {
   display: flex;
@@ -1503,6 +1481,20 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
+.mcp-test-btn.voice-session-link {
+  width: 100%;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.mcp-test-btn.voice-session-link:hover {
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
 .mcp-error-msg {
   display: flex;
   align-items: center;
@@ -1543,6 +1535,59 @@ h1, h2, h3, h4, h5, h6 {
 .patient-meta {
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+/* ========================================
+   PATIENT INFO CARDS (From Context)
+   ======================================== */
+
+.patient-info-cards {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.info-card svg {
+  flex-shrink: 0;
+}
+
+.location-card {
+  color: #10B981;
+}
+
+.location-card svg {
+  color: #10B981;
+}
+
+.medications-card {
+  color: #3B82F6;
+}
+
+.medications-card svg {
+  color: #3B82F6;
+}
+
+.allergies-card {
+  color: #EF4444;
+}
+
+.allergies-card svg {
+  color: #EF4444;
 }
 
 /* ========================================
