@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { vapi, createPersonalizedAssistant, isVapiConfigured, checkMicrophonePermission } from '../utils/vapiClient';
 import { usePatient } from '../context/PatientContext';
+import { getMoodHistory, getRecentActivities, getConversationNotes } from '../utils/activityTracker';
 
 // Map PatientContext patient to MCP-style profile format for promptGenerator
 const mapPatientToProfile = (patient) => {
@@ -36,6 +37,24 @@ const mapPatientToProfile = (patient) => {
   const comfortMemories = patient.comfortMemories?.join(', ') || favoriteMemory;
   const triggers = patient.triggers?.join(', ') || 'unfamiliar surroundings or sudden changes';
   const calmingStrategies = patient.calmingStrategies?.join(', ') || 'listening to familiar music';
+  
+  // Get recent tracking data to provide AI context
+  const recentMoods = getMoodHistory(patient.id, 3); // Last 3 days
+  const todayDate = new Date().toISOString().split('T')[0];
+  const todayNotes = getConversationNotes(patient.id, todayDate);
+  const recentActivities = getRecentActivities(3, patient.id);
+  
+  // Format mood summary for AI
+  const moodSummary = recentMoods.length > 0 
+    ? recentMoods.map(d => `${d.dayOfWeek}: ${d.predominantMood || 'not logged'}`).join(', ')
+    : 'No recent mood data';
+  
+  // Format notes for AI (prioritize emergency tags)
+  const emergencyNotes = todayNotes.filter(n => n.tag === 'emergency');
+  const otherNotes = todayNotes.filter(n => n.tag !== 'emergency').slice(0, 5);
+  const noteSummary = [...emergencyNotes, ...otherNotes]
+    .map(n => `[${n.tag || 'note'}] ${n.text}`)
+    .join(' | ') || 'No notes today';
   
   return {
     patient_id: patient.id,
@@ -54,7 +73,11 @@ const mapPatientToProfile = (patient) => {
     favorite_music: patient.favoriteSongs || [],
     emergency_contacts: patient.emergencyContacts || [],
     doctor_name: patient.doctorName,
-    doctor_phone: patient.doctorPhone
+    doctor_phone: patient.doctorPhone,
+    // NEW: Tracking data for AI context
+    recent_mood_summary: moodSummary,
+    todays_notes: noteSummary,
+    recent_activities: recentActivities.slice(0, 10)
   };
 };
 

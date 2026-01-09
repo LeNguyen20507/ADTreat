@@ -1,0 +1,987 @@
+/* 
+ * Tracking Page Styles
+ * Mood logging, conversation notes, emergency context
+ * Enhanced UI with better visual hierarchy
+ */
+
+.tracking-page {
+  padding: 16px;
+  padding-bottom: 100px;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: linear-gradient(180deg, var(--neutral-50) 0%, #ffffff 100%);
+  min-height: calc(100vh - 116px);
+}
+
+.tracking-section {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--neutral-100);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tracking-section:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Mood Section Special Styling */
+.mood-section {
+  background: linear-gradient(135deg, #ffffff 0%, var(--primary-50) 100%);
+  border: 1px solid var(--primary-100);
+}
+
+/* Notes Section Special Styling */
+.notes-section {
+  background: linear-gradient(135deg, #ffffff 0%, var(--secondary-50) 100%);
+  border: 1px solid var(--secondary-100);
+}
+
+/* History Section Special Styling */
+.history-section {
+  background: linear-gradient(135deg, #ffffff 0%, #FEF3C7 100%);
+  border: 1px solid #FDE68A;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+}
+
+.section-title svg {
+  color: var(--primary-500);
+  background: var(--primary-100);
+  padding: 6px;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+}
+
+.notes-section .section-title svg {
+  color: var(--secondary-500);
+  background: var(--secondary-100);
+}
+
+.history-section .section-title svg {
+  color: #F59E0B;
+  background: #FEF3C7;
+}
+
+.section-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  border-left: 3px solid var(--primary-300);
+}
+
+/* Date Navigator */
+.date-navigator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--neutral-100);
+}
+
+.date-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.date-nav-btn:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+}
+
+.date-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.current-date {
+  text-align: center;
+}
+
+.current-date-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.current-date-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Logged Moods Timeline */
+.logged-moods {
+  margin-bottom: 16px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid var(--neutral-100);
+}
+
+.logged-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.mood-timeline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mood-timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 24px;
+  border: 1px solid var(--neutral-200);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.mood-timeline-item:hover {
+  transform: translateY(-1px);
+}
+
+.timeline-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.timeline-emoji {
+  font-size: 1.2rem;
+}
+
+.timeline-note {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-moods-yet {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Mood Buttons */
+.mood-buttons,
+.mood-buttons-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.mood-btn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: white;
+  border: 2px solid var(--neutral-200);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mood-btn:hover {
+  border-color: var(--mood-color, var(--primary-300));
+  background: var(--mood-bg, var(--primary-50));
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.mood-btn.selected {
+  border-color: var(--mood-color, var(--primary-500));
+  background: var(--mood-bg, var(--primary-50));
+  box-shadow: 0 4px 16px rgba(20, 184, 166, 0.3);
+  transform: scale(1.05);
+}
+
+.mood-btn.selected::after {
+  content: '✓';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  background: var(--mood-color, var(--primary-500));
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mood-btn {
+  position: relative;
+}
+
+.mood-emoji {
+  font-size: 2rem;
+  transition: transform 0.2s ease;
+}
+
+.mood-btn:hover .mood-emoji {
+  transform: scale(1.1);
+}
+
+.mood-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.mood-btn.selected .mood-label {
+  color: var(--mood-color, var(--primary-600));
+}
+
+/* Quick Note Field */
+.quick-note-field {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.quick-note-textarea,
+.quick-note-input,
+.note-input,
+.emergency-input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--neutral-200);
+  border-radius: 14px;
+  font-size: 0.95rem;
+  resize: none !important;
+  min-height: 80px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  -webkit-user-select: text;
+  user-select: text;
+  background: white;
+}
+
+.quick-note-input:focus,
+.note-input:focus,
+.quick-note-textarea:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+}
+
+.quick-note-textarea::placeholder,
+.quick-note-input::placeholder,
+.note-input::placeholder {
+  color: var(--text-muted);
+}
+
+.char-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Mood Actions */
+.mood-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.save-mood-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.35);
+}
+
+.save-mood-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.45);
+}
+
+.save-mood-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.save-mood-btn:disabled {
+  background: var(--neutral-300);
+  cursor: not-allowed;
+}
+
+.add-photo-btn {
+  padding: 12px;
+  background: var(--neutral-100);
+  border: 1px solid var(--neutral-200);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-photo-btn:hover {
+  background: var(--neutral-200);
+}
+
+/* Conversation Notes */
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.note-card {
+  background: var(--neutral-50);
+  border-radius: 12px;
+  padding: 12px;
+  position: relative;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.note-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.delete-note-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.delete-note-btn:hover {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--accent-error);
+}
+
+.note-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Add Note Form */
+.add-note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-note-input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--neutral-200);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.add-note-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+}
+
+.add-note-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.voice-input-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--secondary-50);
+  border: 1px solid var(--secondary-200);
+  color: var(--secondary-500);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.voice-input-btn:hover {
+  background: var(--secondary-100);
+}
+
+.voice-input-btn.recording {
+  background: var(--accent-error);
+  border-color: var(--accent-error);
+  color: white;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.add-note-submit {
+  flex: 1;
+  padding: 12px;
+  background: var(--primary-500);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.add-note-submit:hover {
+  background: var(--primary-600);
+}
+
+/* Prompts Section */
+.prompts-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--neutral-50);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 12px;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.prompts-toggle:hover {
+  background: var(--neutral-100);
+}
+
+.prompts-toggle-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.prompts-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prompt-item {
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.prompt-item:hover {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+}
+
+/* Emergency Context */
+.emergency-context-field {
+  margin-bottom: 16px;
+}
+
+.emergency-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--neutral-200);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  resize: none;
+  min-height: 120px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.emergency-textarea:focus {
+  outline: none;
+  border-color: var(--accent-warning);
+}
+
+.last-updated {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.quick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quick-tag {
+  padding: 6px 12px;
+  background: var(--accent-warning);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #B45309;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quick-tag:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.save-emergency-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent-warning);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.save-emergency-btn:hover {
+  filter: brightness(0.95);
+}
+
+.save-confirmation {
+  text-align: center;
+  padding: 12px;
+  background: rgba(52, 211, 153, 0.1);
+  border-radius: 10px;
+  color: #059669;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+/* Mood History Section */
+.mood-history-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.history-day-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 4px;
+  background: white;
+  border: 1px solid var(--neutral-200);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.history-day-card:hover {
+  border-color: var(--primary-300);
+}
+
+.history-day-card.selected {
+  border-color: var(--primary-500);
+  background: var(--primary-50);
+}
+
+.history-day-card.good { background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.3); }
+.history-day-card.okay { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); }
+.history-day-card.difficult { background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.3); }
+
+.history-day-date {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.history-day-emoji {
+  font-size: 1.3rem;
+}
+
+.history-day-empty {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--neutral-200);
+}
+
+.mood-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
+  padding: 12px;
+  background: var(--neutral-50);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .tracking-page {
+    padding: 12px;
+  }
+  
+  .tracking-section {
+    padding: 16px;
+  }
+  
+  .mood-buttons {
+    gap: 4px;
+  }
+  
+  .mood-emoji {
+    font-size: 1.5rem;
+  }
+  
+  .mood-label {
+    font-size: 0.6rem;
+  }
+  
+  .mood-history-grid {
+    gap: 4px;
+  }
+  
+  .history-day-card {
+    padding: 8px 2px;
+  }
+  
+  .history-day-emoji {
+    font-size: 1.1rem;
+  }
+  
+  .date-nav-btn span {
+    display: none;
+  }
+  
+  .note-tags-row {
+    gap: 6px;
+  }
+  
+  .note-tag-btn {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+  }
+}
+
+/* =========================================
+   Note Tags Selection Row
+   ========================================= */
+
+.note-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 14px;
+  border: 1px solid var(--neutral-100);
+}
+
+.note-tag-btn {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: white;
+  border: 1.5px solid var(--neutral-200);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.note-tag-btn:hover {
+  border-color: var(--tag-color, var(--primary-500));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.note-tag-btn.selected {
+  background: var(--tag-color, var(--primary-500));
+  border-color: var(--tag-color, var(--primary-500));
+  color: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
+}
+
+/* Note Actions Row */
+.note-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Add Note Button Enhanced */
+.add-note-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.35);
+}
+
+.add-note-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(20, 184, 166, 0.45);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+}
+
+.add-note-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Note Tag Label in Card */
+.note-tag-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  background: var(--tag-color, var(--primary-600));
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Conversation Notes List */
+.conversation-notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.empty-notes {
+  text-align: center;
+  padding: 30px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 14px;
+  border: 2px dashed var(--neutral-200);
+}
+
+.empty-notes svg {
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.empty-notes p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.conversation-note-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  border-left: 4px solid var(--tag-color, var(--primary-500));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.conversation-note-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateX(2px);
+}
+
+.conversation-note-card .note-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.conversation-note-card .note-timestamp {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+.conversation-note-card .note-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Prompts Section Enhanced */
+.prompts-section {
+  margin-top: 16px;
+}
+
+.prompts-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 1px solid #FCD34D;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #92400E;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prompts-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.prompts-toggle svg {
+  color: #F59E0B;
+}
+
+.prompts-list {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.prompt-chip {
+  padding: 10px 14px;
+  background: white;
+  border: 1.5px solid var(--neutral-200);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prompt-chip:hover {
+  border-color: var(--primary-400);
+  background: var(--primary-50);
+  color: var(--primary-700);
+  transform: translateY(-1px);
+}

@@ -1,12 +1,13 @@
 /**
  * Navbar Component
  * Global top navigation bar with emergency button (with label), app title, and patient switcher
+ * Tab navigation for Home, Tracking, and Reminders
  * SOS button opens the AI-powered calming assistant modal
- * Single page app - no bottom tabs needed
  */
 
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Home, ClipboardList } from 'lucide-react';
 import { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import SOSModal from './SOSModal';
 import PatientSwitcher from './PatientSwitcher';
 import { usePatient } from '../context/PatientContext';
@@ -14,7 +15,14 @@ import { usePatient } from '../context/PatientContext';
 const Navbar = () => {
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [showPatientSwitcher, setShowPatientSwitcher] = useState(false);
-  const { currentPatient, currentPatientId } = usePatient();
+  const { currentPatient } = usePatient();
+  const location = useLocation();
+
+  // Tab items
+  const tabs = [
+    { path: '/', label: 'Home', icon: Home },
+    { path: '/tracking', label: 'Tracking', icon: ClipboardList }
+  ];
 
   return (
     <>
@@ -63,6 +71,24 @@ const Navbar = () => {
             )}
           </div>
         </button>
+      </nav>
+
+      {/* Tab Navigation Bar */}
+      <nav className="tab-nav-bar">
+        {tabs.map(tab => {
+          const Icon = tab.icon;
+          const isActive = location.pathname === tab.path;
+          return (
+            <NavLink
+              key={tab.path}
+              to={tab.path}
+              className={`tab-nav-item ${isActive ? 'active' : ''}`}
+            >
+              <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+              <span>{tab.label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* SOS Modal - AI-powered calming assistant */}

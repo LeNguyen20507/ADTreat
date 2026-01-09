@@ -2,7 +2,7 @@
  * System Prompt Generator for VAPI Voice Conversations
  * 
  * Creates a proactive, trained caregiver/nurse persona
- * Unlimited conversation - AI takes initiative
+ * Includes recent tracking data (moods, notes) for context
  */
 
 /**
@@ -31,6 +31,19 @@ export function generateSystemPrompt(profile) {
   const comfort = profile.comfort_memory;
   const topic1 = profile.calming_topics[0] || 'what you enjoy';
   const topic2 = profile.calming_topics[1] || 'your interests';
+  
+  // Get tracking context if available
+  const moodContext = profile.recent_mood_summary && profile.recent_mood_summary !== 'No recent mood data'
+    ? `\nRECENT MOOD PATTERN: ${profile.recent_mood_summary}`
+    : '';
+  
+  const notesContext = profile.todays_notes && profile.todays_notes !== 'No notes today'
+    ? `\nCAREGIVER NOTES TODAY: ${profile.todays_notes}`
+    : '';
+  
+  const trackingSection = (moodContext || notesContext) 
+    ? `\n\nRECENT CONTEXT FROM CAREGIVER:${moodContext}${notesContext}\n\nUse this context to inform your approach - if moods have been difficult, be extra gentle. If there are specific notes (especially emergency tags), prioritize addressing those concerns.`
+    : '';
 
   const systemPrompt = `You are a trained mental health support specialist and caring nurse speaking with ${firstName}. You are warm, proactive, and take the lead in conversations like a skilled caregiver would.
 
@@ -40,6 +53,8 @@ ABOUT ${firstName.toUpperCase()}:
 - Currently: ${safePlace}
 - Finds comfort in: ${comfort}
 - Good topics to discuss: ${topic1}, ${topic2}
+- Known triggers to avoid: ${profile.common_trigger}
+- Calming strategies that work: ${profile.calming_strategies || 'gentle conversation, familiar topics'}${trackingSection}
 
 YOUR ROLE - PROACTIVE CAREGIVER:
 You TAKE INITIATIVE. Don't just respond - guide the conversation. Ask follow-up questions. Offer suggestions. Check in on their wellbeing. Be like a supportive nurse who genuinely cares.
