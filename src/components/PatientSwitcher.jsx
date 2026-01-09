@@ -9,7 +9,6 @@ const STEPS = [
   { id: 3, title: 'Contacts', icon: Phone },
   { id: 4, title: 'Favorites', icon: Heart },
   { id: 5, title: 'Memories', icon: Camera },
-  { id: 6, title: 'Music', icon: Music },
 ];
 
 const STAGES = [
@@ -40,8 +39,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
     favoriteThings: { food: '', place: '', activity: '', person: '', era: '', color: '' },
     comfortMemories: [''],
     triggers: [''],
-    calmingStrategies: [''],
-    favoriteSongs: [{ title: '', artist: '' }]
+    calmingStrategies: ['']
   });
 
   const handleSelectPatient = (patientId) => {
@@ -57,8 +55,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
       doctorName: '', doctorPhone: '',
       emergencyContacts: [{ name: '', relationship: '', phone: '' }],
       favoriteThings: { food: '', place: '', activity: '', person: '', era: '', color: '' },
-      comfortMemories: [''], triggers: [''], calmingStrategies: [''],
-      favoriteSongs: [{ title: '', artist: '' }]
+      comfortMemories: [''], triggers: [''], calmingStrategies: ['']
     });
     setCurrentStep(1);
   };
@@ -81,8 +78,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
       emergencyContacts: formData.emergencyContacts.filter(c => c.name.trim()),
       comfortMemories: formData.comfortMemories.filter(m => m.trim()),
       triggers: formData.triggers.filter(t => t.trim()),
-      calmingStrategies: formData.calmingStrategies.filter(s => s.trim()),
-      favoriteSongs: formData.favoriteSongs.filter(s => s.title.trim())
+      calmingStrategies: formData.calmingStrategies.filter(s => s.trim())
     };
     addPatient(cleanedData);
     setShowAddPatient(false);
@@ -278,21 +274,6 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
                   ))}
                   <button className="add-item-btn" onClick={() => addArrayItem('calmingStrategies', '')}>+ Add Strategy</button>
                 </div>
-              </div>
-            )}
-
-            {currentStep === 6 && (
-              <div className="form-step">
-                <h3>Favorite Music</h3>
-                <p className="form-hint">Music from their past can be incredibly calming.</p>
-                {formData.favoriteSongs.map((s, i) => (
-                  <div key={i} className="inline-inputs">
-                    <input type="text" value={s.title} onChange={e => updateArrayObjectItem('favoriteSongs', i, 'title', e.target.value)} placeholder="Song title" />
-                    <input type="text" value={s.artist} onChange={e => updateArrayObjectItem('favoriteSongs', i, 'artist', e.target.value)} placeholder="Artist" className="small" />
-                    {formData.favoriteSongs.length > 1 && <button className="remove-btn" onClick={() => removeArrayItem('favoriteSongs', i)}>×</button>}
-                  </div>
-                ))}
-                <button className="add-item-btn" onClick={() => addArrayItem('favoriteSongs', { title: '', artist: '' })}>+ Add Song</button>
                 
                 <div className="completion-note">
                   <Sparkles size={20} />
@@ -312,7 +293,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
               <button className="nav-btn cancel" onClick={handleCancelAdd}>Cancel</button>
             )}
             
-            {currentStep < 6 ? (
+            {currentStep < 5 ? (
               <button 
                 className="nav-btn next" 
                 onClick={() => setCurrentStep(s => s + 1)}
