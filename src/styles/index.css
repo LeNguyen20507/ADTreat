@@ -153,9 +153,9 @@ body {
   padding: 0;
 }
 
-/* Typography */
+/* Typography - Outfit for headers, Inter for body */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', 'Public Sans', 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
@@ -164,19 +164,19 @@ h1, h2, h3, h4, h5, h6 {
 h1 { 
   font-size: 2rem; 
   font-weight: 700; 
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 h2 { 
   font-size: 1.5rem; 
   font-weight: 700; 
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 h3 { 
   font-size: 1.25rem; 
   font-weight: 600; 
-  letter-spacing: -0.008em;
+  letter-spacing: -0.015em;
 }
 
 h4 { 
@@ -1238,7 +1238,7 @@ h6 {
   transform: translateX(-50%);
   width: 100%;
   max-width: 480px;
-  height: 60px;
+  height: 70px;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -1254,6 +1254,72 @@ h6 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BOTTOM MODE TOGGLE - Dual App Design */
+.bottom-mode-toggle {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 70px;
+  background: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  z-index: 1000;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+
+.bottom-mode-btn {
+  flex: 1;
+  max-width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: 2px solid #E2E8F0;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #F8FAFC;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bottom-mode-btn.active {
+  border-color: transparent;
+  color: white;
+}
+
+.caregiver-mode .bottom-mode-btn.active {
+  background: linear-gradient(135deg, #14B8A6, #0D9488);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+.senior-mode .bottom-mode-btn.active {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.bottom-mode-btn:hover:not(.active) {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+/* Senior mode styling */
+.senior-mode {
+  background: rgba(254, 243, 199, 0.98) !important;
 }
 
 .nav-logo {
