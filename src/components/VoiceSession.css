@@ -1,0 +1,1077 @@
+/**
+ * VoiceSession Component Styles - Stage 4
+ * Complete UI polish with responsive design
+ */
+
+/* ==================== BASE STYLES ==================== */
+
+.vs-page {
+  min-height: 100vh;
+  background: #F5E6D3;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.vs-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: calc(100vh - 60px);
+}
+
+.vs-container.vs-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ==================== PROFILE SELECTION (Task 4.1) ==================== */
+
+.vs-profile-select {
+  padding-top: 40px;
+}
+
+.vs-header-brand {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.vs-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2C3E50;
+  margin: 0 0 8px 0;
+}
+
+.vs-subtitle {
+  font-size: 18px;
+  color: #5D6D7E;
+  margin: 0;
+}
+
+.vs-profile-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 700px;
+  margin: 0 auto 40px;
+}
+
+.vs-profile-card {
+  background: white;
+  border: none;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vs-profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.vs-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.vs-avatar-margaret {
+  background: linear-gradient(135deg, #E8D5E7 0%, #D4B8D2 100%);
+}
+
+.vs-avatar-robert {
+  background: linear-gradient(135deg, #D5E8E8 0%, #B8D4D4 100%);
+}
+
+.vs-avatar-emoji {
+  font-size: 56px;
+}
+
+.vs-card-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2C3E50;
+  margin: 0 0 4px 0;
+}
+
+.vs-card-age {
+  font-size: 18px;
+  color: #7F8C8D;
+  margin: 0 0 16px 0;
+}
+
+.vs-card-desc {
+  font-size: 16px;
+  color: #5D6D7E;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.vs-card-button {
+  background: #4A7C7E;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+
+.vs-profile-card:hover .vs-card-button {
+  background: #3A6C6E;
+}
+
+.vs-back-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #5D6D7E;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.vs-back-link:hover {
+  color: #4A7C7E;
+}
+
+/* ==================== LOADING STATE (Task 4.5) ==================== */
+
+.vs-loading-box {
+  background: white;
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vs-loading-box h2 {
+  margin: 20px 0 8px;
+  color: #2C3E50;
+}
+
+.vs-loading-box p {
+  color: #7F8C8D;
+  margin: 0;
+}
+
+.vs-spinner {
+  color: #4A7C7E;
+  animation: vs-spin 1s linear infinite;
+}
+
+@keyframes vs-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== PRE-CALL SCREEN (Task 4.2) ==================== */
+
+.vs-pre-call {
+  position: relative;
+  padding-top: 60px;
+}
+
+.vs-change-profile-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 2px solid #4A7C7E;
+  color: #4A7C7E;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vs-change-profile-btn:hover {
+  background: #4A7C7E;
+  color: white;
+}
+
+.vs-pre-call-content {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.vs-patient-preview {
+  margin-bottom: 24px;
+}
+
+.vs-avatar-large {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.vs-avatar-emoji-large {
+  font-size: 72px;
+}
+
+.vs-patient-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2C3E50;
+  margin: 0 0 4px 0;
+}
+
+.vs-patient-age {
+  font-size: 20px;
+  color: #7F8C8D;
+  margin: 0;
+}
+
+.vs-pre-call-heading {
+  font-size: 18px;
+  color: #5D6D7E;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.vs-tips-section {
+  background: #E8F4F8;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.vs-tips-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C3E50;
+  cursor: pointer;
+}
+
+.vs-tips-header span {
+  flex: 1;
+  text-align: left;
+}
+
+.vs-tips-list {
+  list-style: none;
+  padding: 0 16px 16px;
+  margin: 0;
+  text-align: left;
+}
+
+.vs-tips-list li {
+  padding: 8px 0;
+  color: #5D6D7E;
+  font-size: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.vs-tips-list li:last-child {
+  border-bottom: none;
+}
+
+.vs-tips-list li::before {
+  content: '•';
+  color: #4A7C7E;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.vs-start-button {
+  width: 100%;
+  max-width: 600px;
+  height: 80px;
+  background: #4A7C7E;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 22px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.2s;
+  margin-bottom: 16px;
+}
+
+.vs-start-button:hover {
+  background: #3A6C6E;
+  transform: scale(1.02);
+}
+
+.vs-change-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #5D6D7E;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.vs-change-link:hover {
+  color: #4A7C7E;
+  text-decoration: underline;
+}
+
+/* ==================== CONNECTING STATE ==================== */
+
+.vs-connecting-name {
+  font-size: 28px;
+  color: #2C3E50;
+  margin: 16px 0;
+}
+
+.vs-connecting-spinner {
+  margin: 20px 0;
+}
+
+.vs-connecting-text {
+  font-size: 20px;
+  color: #2C3E50;
+  margin: 0;
+}
+
+.vs-connecting-subtext {
+  font-size: 16px;
+  color: #7F8C8D;
+  margin: 8px 0 0;
+}
+
+/* ==================== ACTIVE CALL (Task 4.3) ==================== */
+
+.vs-active-call {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+  padding: 0;
+}
+
+.vs-call-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: white;
+  border-bottom: 1px solid #E0E0E0;
+  flex-shrink: 0;
+}
+
+.vs-call-patient-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vs-avatar-small {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vs-avatar-emoji-small {
+  font-size: 24px;
+}
+
+.vs-call-patient-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.vs-call-patient-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2C3E50;
+}
+
+.vs-call-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #7FB069;
+}
+
+.vs-status-dot {
+  width: 8px;
+  height: 8px;
+  background: #7FB069;
+  border-radius: 50%;
+  animation: vs-pulse-dot 1.5s infinite;
+}
+
+@keyframes vs-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.vs-call-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.vs-exchange-badge {
+  background: #E8F4F8;
+  color: #4A7C7E;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.vs-exchange-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.vs-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #E0E0E0;
+  transition: background 0.3s;
+}
+
+.vs-dot.filled {
+  background: #7FB069;
+}
+
+.vs-end-btn-small {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #D88373;
+  color: #D88373;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.vs-end-btn-small:hover {
+  background: #D88373;
+  color: white;
+}
+
+/* Transcript Area */
+.vs-transcript {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #F5E6D3;
+}
+
+.vs-transcript-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #7F8C8D;
+}
+
+.vs-transcript-empty p {
+  margin: 16px 0 0;
+}
+
+.vs-message {
+  max-width: 80%;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 16px;
+}
+
+.vs-message-ai {
+  background: #A7C7E7;
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+
+.vs-message-patient {
+  background: #E8E8E8;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.vs-message-role {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.vs-message-text {
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  color: #2C3E50;
+}
+
+/* Status Bar - At bottom showing Processing/Listening */
+.vs-status-bar {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5E6D3;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.vs-status-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #5D6D7E;
+}
+
+.vs-status-processing {
+  background: #A7C7E7;
+  color: #2C3E50;
+}
+
+.vs-status-listening {
+  background: #E8F4F8;
+  color: #4A7C7E;
+}
+
+.vs-status-pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: vs-pulse-indicator 1s infinite;
+}
+
+/* Latest message highlight */
+.vs-message-latest {
+  box-shadow: 0 2px 8px rgba(74, 124, 126, 0.2);
+  border: 2px solid rgba(74, 124, 126, 0.3);
+}
+
+/* Caring prompt special styling */
+.vs-message-caring {
+  background: linear-gradient(135deg, #A7C7E7 0%, #98D7C2 100%) !important;
+  border-left: 4px solid #7FB069;
+}
+
+.vs-message-caring .vs-message-role {
+  color: #2C3E50;
+  font-weight: 700;
+}
+
+.vs-message-caring .vs-message-text {
+  font-style: italic;
+  color: #1A2530;
+}
+
+@keyframes vs-pulse-indicator {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.5; }
+}
+
+/* Call Controls */
+.vs-call-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #E0E0E0;
+  flex-shrink: 0;
+}
+
+.vs-control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px;
+  background: #F0F0F0;
+  border: none;
+  border-radius: 12px;
+  color: #2C3E50;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 80px;
+}
+
+.vs-control-btn:hover {
+  background: #E0E0E0;
+}
+
+.vs-control-btn.vs-muted {
+  background: #FFEBEE;
+  color: #D88373;
+}
+
+.vs-control-btn.vs-end-call-btn {
+  background: #D88373;
+  color: white;
+}
+
+.vs-control-btn.vs-end-call-btn:hover {
+  background: #C76A5A;
+}
+
+.vs-control-btn.vs-duration {
+  background: transparent;
+  cursor: default;
+}
+
+.vs-control-btn span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Confirmation Modal */
+.vs-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.vs-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.vs-modal h3 {
+  font-size: 24px;
+  color: #2C3E50;
+  margin: 0 0 12px;
+}
+
+.vs-modal p {
+  color: #5D6D7E;
+  margin: 0 0 24px;
+}
+
+.vs-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.vs-modal-cancel,
+.vs-modal-confirm {
+  flex: 1;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vs-modal-cancel {
+  background: #F0F0F0;
+  border: none;
+  color: #5D6D7E;
+}
+
+.vs-modal-cancel:hover {
+  background: #E0E0E0;
+}
+
+.vs-modal-confirm {
+  background: #D88373;
+  border: none;
+  color: white;
+}
+
+.vs-modal-confirm:hover {
+  background: #C76A5A;
+}
+
+/* ==================== SUMMARY SCREEN (Task 4.4) ==================== */
+
+.vs-summary {
+  padding-top: 40px;
+  max-width: 600px;
+}
+
+.vs-summary-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.vs-summary-header h2 {
+  font-size: 32px;
+  color: #2C3E50;
+  margin: 16px 0 8px;
+}
+
+.vs-summary-patient {
+  font-size: 24px;
+  color: #5D6D7E;
+  margin: 0;
+}
+
+.vs-summary-time {
+  font-size: 16px;
+  color: #7F8C8D;
+  margin: 8px 0 0;
+}
+
+.vs-state-badge {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 auto 24px;
+}
+
+.vs-summary-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin-bottom: 32px;
+}
+
+.vs-stat {
+  text-align: center;
+}
+
+.vs-stat-value {
+  display: block;
+  font-size: 36px;
+  font-weight: 700;
+  color: #4A7C7E;
+}
+
+.vs-stat-label {
+  font-size: 14px;
+  color: #7F8C8D;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vs-transcript-box {
+  background: white;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.vs-transcript-box h3 {
+  font-size: 18px;
+  color: #2C3E50;
+  margin: 0 0 16px;
+}
+
+.vs-transcript-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.vs-transcript-line {
+  padding: 10px 0;
+  border-bottom: 1px solid #F0F0F0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.vs-transcript-line:last-child {
+  border-bottom: none;
+}
+
+.vs-line-ai strong {
+  color: #4A7C7E;
+}
+
+.vs-line-patient strong {
+  color: #7F8C8D;
+}
+
+.vs-transcript-line span {
+  margin-left: 8px;
+  color: #2C3E50;
+}
+
+.vs-no-transcript {
+  color: #7F8C8D;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.vs-summary-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.vs-btn-primary,
+.vs-btn-secondary {
+  flex: 1;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.vs-btn-primary {
+  background: #4A7C7E;
+  border: none;
+  color: white;
+}
+
+.vs-btn-primary:hover {
+  background: #3A6C6E;
+}
+
+.vs-btn-secondary {
+  background: white;
+  border: 2px solid #4A7C7E;
+  color: #4A7C7E;
+}
+
+.vs-btn-secondary:hover {
+  background: #F5F5F5;
+}
+
+/* ==================== ERROR SCREEN (Task 4.6) ==================== */
+
+.vs-error-card {
+  background: #FFF3CD;
+  border: 1px solid #FFC107;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  text-align: center;
+}
+
+.vs-error-card h2 {
+  font-size: 24px;
+  color: #2C3E50;
+  margin: 20px 0 12px;
+}
+
+.vs-error-message {
+  font-size: 18px;
+  color: #5D6D7E;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.vs-mic-instructions {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.vs-mic-instructions p {
+  margin: 0 0 12px;
+}
+
+.vs-mic-instructions ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.vs-mic-instructions li {
+  margin-bottom: 8px;
+  color: #5D6D7E;
+}
+
+.vs-error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ==================== RESPONSIVE (Mobile) ==================== */
+
+@media (max-width: 768px) {
+  .vs-title {
+    font-size: 28px;
+  }
+  
+  .vs-subtitle {
+    font-size: 16px;
+  }
+  
+  .vs-profile-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .vs-profile-card {
+    padding: 24px 20px;
+  }
+  
+  .vs-avatar {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .vs-avatar-emoji {
+    font-size: 48px;
+  }
+  
+  .vs-card-name {
+    font-size: 22px;
+  }
+  
+  .vs-card-desc {
+    font-size: 15px;
+  }
+  
+  .vs-change-profile-btn {
+    top: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .vs-avatar-large {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .vs-avatar-emoji-large {
+    font-size: 56px;
+  }
+  
+  .vs-patient-name {
+    font-size: 26px;
+  }
+  
+  .vs-start-button {
+    height: 70px;
+    font-size: 20px;
+  }
+  
+  .vs-call-topbar {
+    padding: 12px 16px;
+  }
+  
+  .vs-call-patient-name {
+    font-size: 16px;
+  }
+  
+  .vs-exchange-badge {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+  
+  .vs-end-btn-small {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .vs-message {
+    max-width: 85%;
+  }
+  
+  .vs-call-controls {
+    gap: 12px;
+    padding: 16px;
+  }
+  
+  .vs-control-btn {
+    padding: 10px 16px;
+    min-width: 70px;
+  }
+  
+  .vs-summary-actions {
+    flex-direction: column;
+  }
+  
+  .vs-summary-stats {
+    gap: 32px;
+  }
+  
+  .vs-stat-value {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vs-container {
+    padding: 16px;
+  }
+  
+  .vs-call-meta {
+    display: none;
+  }
+  
+  .vs-exchange-badge {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 8px;
+  }
+}

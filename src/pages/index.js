@@ -4,6 +4,5 @@
  */
 
 export { default as Home } from './Home';
+export { default as Tracking } from './Tracking';
 export { default as Reminders } from './Reminders';
-export { default as Learn } from './Learn';
-export { default as Profile } from './Profile';
