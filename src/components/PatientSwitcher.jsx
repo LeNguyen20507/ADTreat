@@ -141,6 +141,59 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
             {currentStep === 1 && (
               <div className="form-step">
                 <h3>Basic Information</h3>
+
+                {/* Avatar Upload */}
+                <div className="form-field avatar-upload-field" style={{ marginBottom: '20px', textAlign: 'center' }}>
+                  <div
+                    className="avatar-preview"
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      borderRadius: '50%',
+                      background: formData.avatarUrl ? 'transparent' : 'var(--neutral-100)',
+                      border: '2px dashed var(--neutral-300)',
+                      margin: '0 auto 10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      position: 'relative'
+                    }}
+                  >
+                    {formData.avatarUrl ? (
+                      <img src={formData.avatarUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <Camera size={24} color="var(--text-secondary)" />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            updateField('avatarUrl', reader.result);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        opacity: 0,
+                        cursor: 'pointer'
+                      }}
+                    />
+                  </div>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--primary-500)', cursor: 'pointer' }}>
+                    {formData.avatarUrl ? 'Change Photo' : 'Upload Photo'}
+                  </label>
+                </div>
+
                 <div className="form-field">
                   <label>Full Name *</label>
                   <input type="text" value={formData.name} onChange={e => updateField('name', e.target.value)} placeholder="e.g., Margaret Thompson" />
@@ -274,7 +327,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
                   ))}
                   <button className="add-item-btn" onClick={() => addArrayItem('calmingStrategies', '')}>+ Add Strategy</button>
                 </div>
-                
+
                 <div className="completion-note">
                   <Sparkles size={20} />
                   <p>Almost done! This info will help our AI provide personalized support.</p>
@@ -292,10 +345,10 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
             ) : (
               <button className="nav-btn cancel" onClick={handleCancelAdd}>Cancel</button>
             )}
-            
+
             {currentStep < 5 ? (
-              <button 
-                className="nav-btn next" 
+              <button
+                className="nav-btn next"
                 onClick={() => setCurrentStep(s => s + 1)}
                 disabled={currentStep === 1 && !formData.name.trim()}
               >
@@ -331,7 +384,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
               onClick={() => handleSelectPatient(patient.id)}
               style={{ '--patient-color': patient.color }}
             >
-              <div 
+              <div
                 className="patient-switcher-avatar"
                 style={{ background: patient.color, borderColor: patient.color }}
               >
@@ -341,7 +394,7 @@ const PatientSwitcher = ({ isOpen, onClose }) => {
                   <span style={{ color: 'white', fontWeight: '700', fontSize: '1.1rem' }}>{patient.initials}</span>
                 )}
               </div>
-              
+
               <div className="patient-switcher-info">
                 <span className="patient-switcher-name">{patient.preferredName}</span>
                 <span className="patient-switcher-details">

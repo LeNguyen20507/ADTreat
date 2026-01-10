@@ -46,9 +46,7 @@ const defaultPatientsData = {
     stage: 'Early-Stage Alzheimer\'s',
     location: 'Portland, Oregon',
     initials: 'MT',
-    initials: 'MT',
-    avatarUrl: '/avatars/margaret.png',
-    color: '#14B8A6',
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Margaret&backgroundColor=14b8a6',
     color: '#14B8A6',
     diagnosis: 'Diagnosed 2024 with mild cognitive impairment progressing to early Alzheimer\'s',
     medications: [
@@ -93,9 +91,7 @@ const defaultPatientsData = {
     stage: 'Moderate Alzheimer\'s',
     location: 'Boston, Massachusetts',
     initials: 'WO',
-    initials: 'WO',
-    avatarUrl: '/avatars/bill.png',
-    color: '#3B82F6', // blue
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=William&backgroundColor=3b82f6',
     color: '#3B82F6', // blue
     diagnosis: 'Diagnosed 2022, moderate stage with sundowning episodes',
     medications: [
@@ -140,9 +136,7 @@ const defaultPatientsData = {
     stage: 'Moderate-Severe Alzheimer\'s',
     location: 'Nashville, Tennessee',
     initials: 'DJ',
-    initials: 'DJ',
-    avatarUrl: '/avatars/dorothy.png',
-    color: '#A855F7', // purple
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dorothy&backgroundColor=a855f7',
     color: '#A855F7', // purple
     diagnosis: 'Diagnosed 2020, requires assistance with daily activities',
     medications: [
@@ -267,7 +261,7 @@ export const PatientProvider = ({ children }) => {
       stage: patientData.stage || 'Not Specified',
       location: patientData.location || '',
       initials: getInitials(patientData.name || 'NP'),
-      avatarUrl: getAvatarUrl(patientData.name || 'Patient', color),
+      avatarUrl: patientData.avatarUrl || getAvatarUrl(patientData.name || 'Patient', color),
       color,
       diagnosis: patientData.diagnosis || '',
       medications: patientData.medications || [],
